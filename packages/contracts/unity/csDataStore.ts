@@ -3,7 +3,7 @@ import { AbiTypeToSchemaType, SchemaType } from "@latticexyz/schema-type";
 import { schemaTypesToCSTypeStrings } from "./types";
 import { StoreConfig } from "@latticexyz/store";
 import { WorldConfig } from "@latticexyz/world";
-import { writeFileSync } from "fs";
+import { writeFileSync, mkdirSync } from "fs";
 import { exec, execSync } from "child_process";
 import { renderFile } from "ejs";
 import { basename, dirname, extname, join } from "path";
@@ -43,6 +43,7 @@ export async function createCSComponents(filePath: string, mudConfig: any, table
     },
     {},
     (err, str) => {
+      console.log("writeFileSync " + filePath);
       writeFileSync(filePath, str);
       if (err) throw err;
     }
@@ -52,10 +53,16 @@ export async function createCSComponents(filePath: string, mudConfig: any, table
 async function main() {
   // get args
   const args = process.argv.slice(2);
-  const outputPath = args[0] ?? "../client/Assets/Scripts/codegen";
+  const outputPath = args[0] ?? `../client/Assets/Scripts/codegen`;
+  console.log(outputPath);
 
   // create the folder if it doesn't exist
-  execSync(`mkdir -p ${outputPath}`);
+  try {
+    mkdirSync(outputPath, { recursive: true });
+    console.log("Directory created successfully.");
+  } catch (error) {
+    if (error instanceof Error) console.error("Error creating directory:", error.message);
+  }
 
   const tables = mudConfig.tables;
   Object.entries(tables).forEach(async ([tableName, tableData]) => {
@@ -63,7 +70,7 @@ async function main() {
     await createCSComponents(filePath, mudConfig, tableName, tableData);
   });
 
-  exec(`dotnet tool run dotnet-csharpier ${outputPath}`, (err, stdout, stderr) => {
+  exec(`dotnet tool run dotnet-csharpier "${outputPath}"`, (err, stdout, stderr) => {
     if (err) {
       console.error(err);
       return;
