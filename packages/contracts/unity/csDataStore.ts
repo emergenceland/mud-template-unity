@@ -43,8 +43,6 @@ export async function createCSComponents(filePath: string, mudConfig: any, table
     },
     {},
     (err, str) => {
-      let directory = dirname(filePath);
-      mkdirSync(directory, { recursive: true });
       console.log("writeFileSync " + filePath);
       writeFileSync(filePath, str);
       if (err) throw err;
@@ -61,10 +59,9 @@ async function main() {
   // create the folder if it doesn't exist
   try {
     mkdirSync(outputPath, { recursive: true });
-    console.log('Directory created successfully.');
+    console.log("Directory created successfully.");
   } catch (error) {
-    if(error instanceof Error)
-      console.error('Error creating directory:', error.message);
+    if (error instanceof Error) console.error("Error creating directory:", error.message);
   }
 
   const tables = mudConfig.tables;
