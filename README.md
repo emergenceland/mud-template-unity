@@ -15,6 +15,10 @@ If you are using Windows:
 2. install nodejs, including “native modules” (nodejs.org/en/download) (re native modules: just keep the checkmark, it’s enabled by default in the installer)
 3. Install foundry via foundryup using Git bash
 
+## Tutorial
+
+The tutorial repo for this template can be found [here](https://github.com/emergenceland/tankmud-tutorial).
+
 ## Quickstart
 
 Run the following command in the root:
