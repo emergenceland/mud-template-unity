@@ -1,0 +1,51 @@
+{
+  "name": "contracts",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "forge clean && forge build",
+    "csTables": "rimraf ../client/Assets/Scripts/codegen && tsx unity/csDataStore.ts ../client/Assets/Scripts/codegen",
+    "csBindings": "ts-node unity/csBindings.ts ../client/Assets/Scripts",
+    "csgen": "pnpm run csBindings && pnpm run csTables",
+    "deploy": "pnpm run initialize && mud deploy && pnpm run resources",
+    "deploy:testnet": "pnpm run initialize && mud deploy --profile=lattice-testnet && pnpm run resources",
+    "dev": "pnpm run deploy --disableTxWait",
+    "devnode": "mud devnode",
+    "initialize": "pnpm run tablegen && pnpm run worldgen && pnpm run build && dotnet tool restore && pnpm run csgen",
+    "lint": "pnpm run prettier && pnpm run solhint",
+    "prettier": "prettier --write 'src/**/*.sol'",
+    "resources": "ts-node unity/moveDeployToResources.ts ../client/Assets/Resources ./deploys/31337",
+    "solhint": "solhint --config ./.solhint.json 'src/**/*.sol' --fix",
+    "tablegen": "mud tablegen",
+    "test": "tsc --noEmit && mud test",
+    "worldgen": "mud worldgen"
+  },
+  "dependencies": {
+    "@ethersproject/abi": "^5.7.0",
+    "@ethersproject/bytes": "^5.7.0",
+    "@ethersproject/providers": "^5.7.2",
+    "@latticexyz/cli": "2.0.0-alpha.1.122+186528cd",
+    "@latticexyz/config": "2.0.0-alpha.1.122+186528cd",
+    "@latticexyz/schema-type": "2.0.0-alpha.1.122+186528cd",
+    "@latticexyz/std-contracts": "2.0.0-alpha.1.122+186528cd",
+    "@latticexyz/store": "2.0.0-alpha.1.122+186528cd",
+    "@latticexyz/world": "2.0.0-alpha.1.122+186528cd",
+    "ethers": "^5.7.2"
+  },
+  "devDependencies": {
+    "@typechain/ethers-v5": "^10.2.0",
+    "@types/ejs": "^3.1.2",
+    "@types/node": "^18.15.11",
+    "ds-test": "https://github.com/dapphub/ds-test.git#c9ce3f25bde29fc5eb9901842bf02850dfd2d084",
+    "ejs": "^3.1.9",
+    "forge-std": "https://github.com/foundry-rs/forge-std.git#b4f121555729b3afb3c5ffccb62ff4b6e2818fd3",
+    "prettier": "^2.6.2",
+    "prettier-plugin-solidity": "^1.0.0-beta.19",
+    "solhint": "^3.3.7",
+    "ts-node": "^10.9.1",
+    "tsup": "^6.7.0",
+    "tsx": "^3.12.7",
+    "typechain": "^8.1.1"
+  }
+}
