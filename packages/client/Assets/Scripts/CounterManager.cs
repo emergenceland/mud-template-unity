@@ -1,9 +1,9 @@
 using System;
-using System.Collections.Generic;
-using DefaultNamespace;
+using Cysharp.Threading.Tasks;
 using IWorld.ContractDefinition;
 using mud.Unity;
 using UniRx;
+using DefaultNamespace;
 using UnityEngine;
 using ObservableExtensions = UniRx.ObservableExtensions;
 
@@ -11,7 +11,7 @@ public class CounterManager : MonoBehaviour
 {
 	private IDisposable _counterSub;
 	public GameObject prefab;
-	private NetworkManager net;	
+	private NetworkManager net;
 
 	// Start is called before the first frame update
 	void Start()
@@ -39,15 +39,23 @@ public class CounterManager : MonoBehaviour
 	{
 		if (Input.GetMouseButtonDown(0))
 		{
-			StartCoroutine(SendIncrementTx());
+			SendIncrementTxAsync().Forget();
 		}
 	}
-	
-	private IEnumerator<object> SendIncrementTx()
+
+	private async UniTaskVoid SendIncrementTxAsync()
 	{
-		yield return Utils.Utils.AwaitTask(net.worldSend.TxExecute<IncrementFunction>());
+		try
+		{
+			await net.worldSend.TxExecute<IncrementFunction>();
+		}
+		catch (Exception ex)
+		{
+			// Handle your exception here
+			Debug.LogException(ex);
+		}
 	}
-	
+
 	private void SpawnPrefab()
 	{
 		var randomX = UnityEngine.Random.Range(-1, 1);

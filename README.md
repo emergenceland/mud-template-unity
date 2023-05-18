@@ -105,6 +105,20 @@ Note that not all Unity functions can be async, so you may need to wrap your tra
 			await nm.worldSend.TxExecute<SpawnFunction>(0, 0);
 		}
 	}
+
+	// For example, with the UniTask library:
+	private async UniTaskVoid SendIncrementTxAsync()
+	{
+		try
+		{
+			await net.worldSend.TxExecute<IncrementFunction>();
+		}
+		catch (Exception ex)
+		{
+			// Handle your exception here
+			Debug.LogException(ex);
+		}
+	}
 ```
 
 ### Deploying to a Testnet
