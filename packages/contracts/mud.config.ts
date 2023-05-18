@@ -14,13 +14,6 @@ export default mudConfig({
       },
       storeArgument: true,
     },
-    /*
-     * TODO:
-     * - Position: (x: uint32, y: uint32),
-     * - Player: bool,
-     * - Health: uint32,
-     * - Damage: uint32
-     */
   },
   modules: [
     {
@@ -28,6 +21,5 @@ export default mudConfig({
       root: true,
       args: [resolveTableId("Counter")],
     },
-    // TODO: Add reverse lookup for Position
   ],
 });
