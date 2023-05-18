@@ -27,6 +27,17 @@ namespace IWorld.ContractDefinition
 
     }
 
+    public partial class AttackFunction : AttackFunctionBase { }
+
+    [Function("attack")]
+    public class AttackFunctionBase : FunctionMessage
+    {
+        [Parameter("int32", "x", 1)]
+        public virtual int X { get; set; }
+        [Parameter("int32", "y", 2)]
+        public virtual int Y { get; set; }
+    }
+
     public partial class CallFunction : CallFunctionBase { }
 
     [Function("call", "bytes")]
@@ -230,6 +241,17 @@ namespace IWorld.ContractDefinition
     public class IsStoreFunctionBase : FunctionMessage
     {
 
+    }
+
+    public partial class MoveFunction : MoveFunctionBase { }
+
+    [Function("move")]
+    public class MoveFunctionBase : FunctionMessage
+    {
+        [Parameter("int32", "x", 1)]
+        public virtual int X { get; set; }
+        [Parameter("int32", "y", 2)]
+        public virtual int Y { get; set; }
     }
 
     public partial class PopFromField1Function : PopFromField1FunctionBase { }
@@ -529,6 +551,17 @@ namespace IWorld.ContractDefinition
         public virtual byte[] Data { get; set; }
     }
 
+    public partial class SpawnFunction : SpawnFunctionBase { }
+
+    [Function("spawn")]
+    public class SpawnFunctionBase : FunctionMessage
+    {
+        [Parameter("int32", "x", 1)]
+        public virtual int X { get; set; }
+        [Parameter("int32", "y", 2)]
+        public virtual int Y { get; set; }
+    }
+
     public partial class UpdateInFieldFunction : UpdateInFieldFunctionBase { }
 
     [Function("updateInField")]
@@ -770,6 +803,8 @@ namespace IWorld.ContractDefinition
 
 
 
+
+
     public partial class GetFieldOutputDTO : GetFieldOutputDTOBase { }
 
     [FunctionOutput]
@@ -832,6 +867,10 @@ namespace IWorld.ContractDefinition
         [Parameter("bytes32", "schema", 1)]
         public virtual byte[] Schema { get; set; }
     }
+
+
+
+
 
 
 
