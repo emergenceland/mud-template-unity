@@ -20,22 +20,19 @@ namespace DefaultNamespace
 
         public static CounterTable? GetTableValue(string key)
         {
-            var query = new Query()
-                .Find("?value", "?attribute")
-                .Where(TableId.ToString(), key, "?attribute", "?value");
-            var result = NetworkManager.Instance.ds.Query(query);
+            var query = new Query().In(TableId);
+            var result = NetworkManager.Instance.ds.RunQuery(query);
             var counterTable = new CounterTable();
             var hasValues = false;
 
             foreach (var record in result)
             {
-                var attribute = record["attribute"].ToString();
-                var value = record["value"];
+                var v = record.value["value"];
 
-                switch (attribute)
+                switch (record.key)
                 {
                     case "value":
-                        var valueValue = (ulong)value;
+                        var valueValue = (ulong)v;
                         counterTable.value = valueValue;
                         hasValues = true;
                         break;
