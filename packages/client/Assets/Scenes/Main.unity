@@ -1295,11 +1295,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88c2f0f44d7cc4c3abe5f498cfeca6be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jsonRpcUrl: http://localhost:8545
-  wsRpcUrl: ws://localhost:8545
-  pk: 
-  chainId: 31337
+  jsonRpcUrl: https://follower.testnet-chain.linfra.xyz/
+  wsRpcUrl: wss://follower.testnet-chain.linfra.xyz/
+  chainId: 4242
   contractAddress: 
+  faucetUrl: http://faucet.testnet-mud-services.linfra.xyz/
+  pk: 
+  uniqueWallets: 1
   disableCache: 1
 --- !u!4 &1457204062
 Transform:
