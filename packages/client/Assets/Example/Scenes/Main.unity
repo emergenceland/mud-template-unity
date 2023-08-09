@@ -932,14 +932,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88c2f0f44d7cc4c3abe5f498cfeca6be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jsonRpcUrl: https://follower.testnet-chain.linfra.xyz/
-  wsRpcUrl: wss://follower.testnet-chain.linfra.xyz/
-  chainId: 4242
-  contractAddress: 
-  faucetUrl: http://faucet.testnet-mud-services.linfra.xyz/
+  networkType: 0
+  local: {fileID: 11400000, guid: 8f9de2d4a845cd9409aa4027b0fdc8b4, type: 2}
+  testnet: {fileID: 11400000, guid: 526c97e7537d6274cb7a496684db0980, type: 2}
+  mainnet: {fileID: 11400000, guid: 81361fd2f55627647aa60811fe3080ac, type: 2}
+  worldAddress: 
+  faucetUrl: 
   pk: 
   uniqueWallets: 1
   disableCache: 1
+  address: 
+  addressKey: 
 --- !u!4 &1457204062
 Transform:
   m_ObjectHideFlags: 0
