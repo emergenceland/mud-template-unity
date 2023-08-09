@@ -12,32 +12,32 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    public class CounterTableUpdate : TypedRecordUpdate<Tuple<CounterTable?, CounterTable?>> { }
+    public class PlayerTableUpdate : TypedRecordUpdate<Tuple<PlayerTable?, PlayerTable?>> { }
 
-    public class CounterTable : IMudTable
+    public class PlayerTable : IMudTable
     {
-        public readonly static TableId ID = new("", "Counter");
+        public readonly static TableId ID = new("", "Player");
 
         public override TableId GetTableId()
         {
             return ID;
         }
 
-        public ulong? value;
+        public bool? value;
 
         public override Type TableType()
         {
-            return typeof(CounterTable);
+            return typeof(PlayerTable);
         }
 
         public override Type TableUpdateType()
         {
-            return typeof(CounterTableUpdate);
+            return typeof(PlayerTableUpdate);
         }
 
         public override void SetValues(params object[] functionParameters)
         {
-            value = (ulong)(int)functionParameters[0];
+            value = (bool)functionParameters[0];
         }
 
         public override bool SetValues(IEnumerable<Property> result)
@@ -51,7 +51,7 @@ namespace DefaultNamespace
                 switch (attribute)
                 {
                     case "value":
-                        var valueValue = (ulong)value;
+                        var valueValue = (bool)value;
                         value = valueValue;
                         hasValues = true;
                         break;
@@ -67,7 +67,7 @@ namespace DefaultNamespace
                 .Find("?value", "?attribute")
                 .Where(TableId.ToString(), key, "?attribute", "?value");
             var result = NetworkManager.Instance.ds.Query(query);
-            var counterTable = new CounterTable();
+            var playerTable = new PlayerTable();
             var hasValues = false;
 
             foreach (var record in result)
@@ -78,25 +78,25 @@ namespace DefaultNamespace
                 switch (attribute)
                 {
                     case "value":
-                        var valueValue = (ulong)value;
-                        counterTable.value = valueValue;
+                        var valueValue = (bool)value;
+                        playerTable.value = valueValue;
                         hasValues = true;
                         break;
                 }
             }
 
-            return hasValues ? counterTable : null;
+            return hasValues ? playerTable : null;
         }
 
         public override IMudTable RecordUpdateToTable(RecordUpdate tableUpdate)
         {
-            CounterTableUpdate update = (CounterTableUpdate)tableUpdate;
+            PlayerTableUpdate update = (PlayerTableUpdate)tableUpdate;
             return update?.TypedValue.Item1;
         }
 
         public override RecordUpdate CreateTypedRecord(RecordUpdate newUpdate)
         {
-            return new CounterTableUpdate
+            return new PlayerTableUpdate
             {
                 TableId = newUpdate.TableId,
                 Key = newUpdate.Key,
@@ -105,27 +105,27 @@ namespace DefaultNamespace
             };
         }
 
-        public static Tuple<CounterTable?, CounterTable?> MapUpdates(
+        public static Tuple<PlayerTable?, PlayerTable?> MapUpdates(
             Tuple<Property?, Property?> value
         )
         {
-            CounterTable? current = null;
-            CounterTable? previous = null;
+            PlayerTable? current = null;
+            PlayerTable? previous = null;
 
             if (value.Item1 != null)
             {
                 try
                 {
-                    current = new CounterTable
+                    current = new PlayerTable
                     {
                         value = value.Item1.TryGetValue("value", out var valueVal)
-                            ? (ulong)valueVal
+                            ? (bool)valueVal
                             : default,
                     };
                 }
                 catch (InvalidCastException)
                 {
-                    current = new CounterTable { value = null, };
+                    current = new PlayerTable { value = null, };
                 }
             }
 
@@ -133,20 +133,20 @@ namespace DefaultNamespace
             {
                 try
                 {
-                    previous = new CounterTable
+                    previous = new PlayerTable
                     {
                         value = value.Item2.TryGetValue("value", out var valueVal)
-                            ? (ulong)valueVal
+                            ? (bool)valueVal
                             : default,
                     };
                 }
                 catch (InvalidCastException)
                 {
-                    previous = new CounterTable { value = null, };
+                    previous = new PlayerTable { value = null, };
                 }
             }
 
-            return new Tuple<CounterTable?, CounterTable?>(current, previous);
+            return new Tuple<PlayerTable?, PlayerTable?>(current, previous);
         }
     }
 }

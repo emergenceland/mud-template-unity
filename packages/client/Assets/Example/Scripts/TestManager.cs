@@ -24,7 +24,7 @@ public class StressTestManager : MonoBehaviour
 
     private void SubscribeToCounter(NetworkManager _)
     {
-        var incrementQuery = new Query().In(CounterTable.TableId);
+        var incrementQuery = new Query().In(CounterTable.ID);
         _counterSub = ObservableExtensions.Subscribe(net.ds.RxQuery(incrementQuery).ObserveOnMainThread(), OnIncrement);
     }
 
@@ -36,7 +36,7 @@ public class StressTestManager : MonoBehaviour
         {
             var currentValue = record.value;
             if (currentValue == null) return;
-            Debug.Log("Counter is now: " + currentValue["value"]);
+            Debug.Log("Counter is now: " + currentValue);
             SpawnPrefab();
         }
     }

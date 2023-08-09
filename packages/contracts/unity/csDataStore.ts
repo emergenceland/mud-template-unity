@@ -50,6 +50,25 @@ export async function createCSComponents(filePath: string, mudConfig: any, table
   );
 }
 
+
+export async function createAssembly(filePath: string, mudConfig: any) {
+
+  renderFile(
+    "./unity/templates/AssemblyTemplate.ejs",
+    {
+      namespace: "DefaultNamespace",
+    },
+    {},
+    (err, str) => {
+      console.log("writeFileSync " + filePath);
+      writeFileSync(filePath, str);
+      if (err) throw err;
+    }
+  );
+}
+
+
+
 async function main() {
   // get args
   const args = process.argv.slice(2);
@@ -69,6 +88,9 @@ async function main() {
     const filePath = `${outputPath}/${tableName + "Table"}.cs`;
     await createCSComponents(filePath, mudConfig, tableName, tableData);
   });
+
+  // const filePathType = `${outputPath}/DefaultNamespace.asmdef`;
+  // await createAssembly(filePathType, mudConfig);
 
   exec(`dotnet tool run dotnet-csharpier "${outputPath}"`, (err, stdout, stderr) => {
     if (err) {

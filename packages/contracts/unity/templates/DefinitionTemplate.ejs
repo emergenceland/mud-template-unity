@@ -7,6 +7,8 @@ using mud.Network.schemas;
 using mud.Unity;
 using UniRx;
 using Property = System.Collections.Generic.Dictionary<string, object>;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace <%= namespace %>
 {
@@ -14,6 +16,112 @@ namespace <%= namespace %>
 
 	public class <%= tableClassName %> : IMudTable
 	{
-		public static readonly TableId TableId = new ("<%= tableNamespace %>", "<%= tableName %>");
+		public readonly static TableId ID = new ("<%= tableNamespace %>", "<%= tableName %>");
+		public override TableId GetTableId() {return ID;}
+
+		<% for (const field of fields) { -%>
+			public <%= field.type %>? <%= field.key %>;
+		<% } -%>
+
+		public override Type TableType() {return typeof(<%= tableClassName %>);}
+		public override Type TableUpdateType() {return typeof(<%= tableClassName %>Update);}
+		
+		public override void SetValues(params object[] functionParameters){
+
+			<% var i = 0 -%>
+			<% for (const field of fields) { -%>
+				<% if (field.type === "long" || field.type === "ulong") { -%> 
+				<%= field.key %> = (<%= field.type %>)(int)functionParameters[<%= i -%>];
+				<% } else { -%> 
+				<%= field.key %> = (<%= field.type %>)functionParameters[<%= i -%>];
+				<% } -%> 
+				<% i++ -%>
+			<% } -%>
+		}
+
+		public override void RecordToTable(Record record) {
+
+			var table = record.value;
+			//bool hasValues = false;
+
+			<% for (const field of fields) { -%>
+				var <%= field.key %>Value = 
+				<% if (field.type == "System.Numerics.BigInteger") { -%>
+					new System.Numerics.BigInteger((int)value);
+					<% } else { -%>
+					(<%= field.type %>)table["<%= field.key %>"];
+				<% } -%> 
+				<%= field.key %> = <%= field.key %>Value;	
+
+			<% } -%>
+
+		}
+
+		public override IMudTable RecordUpdateToTable(RecordUpdate tableUpdate) {
+			<%= tableClassName%>Update update = (<%= tableClassName%>Update)tableUpdate;
+			return update?.TypedValue.Item1;
+		}	
+
+
+		public override RecordUpdate CreateTypedRecord(RecordUpdate newUpdate)
+        {
+            return new <%= tableClassName%>Update
+                {
+                    TableId = newUpdate.TableId,
+                    Key = newUpdate.Key,
+                    Value = newUpdate.Value,
+                    TypedValue = MapUpdates(newUpdate.Value)
+                };
+        }
+
+		public static Tuple<<%= tableClassName %>?, <%= tableClassName %>?> MapUpdates(Tuple<Property?, Property?> value) {
+			<%= tableClassName %>? current = null;
+			<%= tableClassName %>? previous = null;
+
+			if (value.Item1 != null) 
+			{
+				try {
+					current = new <%= tableClassName %>
+					{
+						<% for (const field of fields) { -%>
+							<%= field.key %> = value.Item1.TryGetValue("<%= field.key %>", out var <%= field.key %>Val) 
+									? (<%= field.type %>)<%= field.key %>Val : default,
+						<% } -%>
+					};
+				} catch (InvalidCastException)
+				{
+					current = new <%= tableClassName %> 
+					{
+						<% for (const field of fields) { -%>
+							<%= field.key %> = 	null,
+						<% } -%>	
+					};
+				}
+			}
+
+			if (value.Item2 != null)
+			{
+				try {
+					previous = new <%= tableClassName %>
+					{
+						<% for (const field of fields) { -%>
+							<%= field.key %> = value.Item2.TryGetValue("<%= field.key %>", out var <%= field.key %>Val) 
+									? (<%= field.type %>)<%= field.key %>Val : default,
+						<% } -%>
+					};
+				} catch (InvalidCastException)
+				{
+					previous = new  <%= tableClassName %>
+					{
+						<% for (const field of fields) { -%>
+							<%= field.key %> = 	null,
+						<% } -%>	
+					};
+				}
+		
+			}
+
+			return new Tuple<<%= tableClassName %>?, <%= tableClassName %>?> (current, previous);
+		}
 	}
 }

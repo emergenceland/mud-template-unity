@@ -24,10 +24,9 @@ public class CounterManager : MonoBehaviour
 
     private void SubscribeToCounter(NetworkManager _)
     {
-        var incrementQuery = new Query().In(CounterTable.TableId);
+        var incrementQuery = new Query().In(CounterTable.ID);
         _counterSub = ObservableExtensions.Subscribe(net.ds.RxQuery(incrementQuery).ObserveOnMainThread(), OnIncrement);
     }
-
 
     private void OnIncrement((List<Record> SetRecords, List<Record> RemovedRecords) update)
     {
@@ -36,7 +35,7 @@ public class CounterManager : MonoBehaviour
         {
             var currentValue = record.value;
             if (currentValue == null) return;
-            Debug.Log("Counter is now: " + currentValue["value"]);
+            Debug.Log("Counter is now: " + currentValue);
             SpawnPrefab();
         }
     }
@@ -67,10 +66,5 @@ public class CounterManager : MonoBehaviour
         var randomX = UnityEngine.Random.Range(-1, 1);
         var randomZ = UnityEngine.Random.Range(-1, 1);
         Instantiate(prefab, new Vector3(randomX, 5, randomZ), Quaternion.identity);
-    }
-
-    private void OnDestroy()
-    {
-        _counterSub?.Dispose();
     }
 }

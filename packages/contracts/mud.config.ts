@@ -14,6 +14,9 @@ export default mudConfig({
       },
       storeArgument: true,
     },
+
+    Player: "bool",
+    
   },
   modules: [
     {

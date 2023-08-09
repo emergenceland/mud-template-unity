@@ -7,7 +7,7 @@
     "build": "forge clean && forge build",
     "csTables": "rimraf ../client/Assets/Scripts/codegen && tsx unity/csDataStore.ts ../client/Assets/Scripts/codegen",
     "csBindings": "ts-node unity/csBindings.ts ../client/Assets/Scripts",
-    "csgen": "pnpm run csBindings",
+    "csgen": "pnpm run csBindings && pnpm run csTables",
     "deploy": "pnpm run initialize && mud deploy && pnpm run resources",
     "deploy:hackathon": "pnpm run initialize && mud deploy --profile=hackathon-testnet && pnpm run resources:hackathon",
     "deploy:testnet": "pnpm run initialize && mud deploy --profile=lattice-testnet && pnpm run resources:testnet",
