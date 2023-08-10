@@ -442,19 +442,25 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAsync(nextStateFunction);
         }
 
-        public Task<string> NextStateRequestAsync()
-        {
-             return ContractHandler.SendRequestAsync<NextStateFunction>();
-        }
-
         public Task<TransactionReceipt> NextStateRequestAndWaitForReceiptAsync(NextStateFunction nextStateFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(nextStateFunction, cancellationToken);
         }
 
-        public Task<TransactionReceipt> NextStateRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
+        public Task<string> NextStateRequestAsync(int ballNumber)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync<NextStateFunction>(null, cancellationToken);
+            var nextStateFunction = new NextStateFunction();
+                nextStateFunction.BallNumber = ballNumber;
+            
+             return ContractHandler.SendRequestAsync(nextStateFunction);
+        }
+
+        public Task<TransactionReceipt> NextStateRequestAndWaitForReceiptAsync(int ballNumber, CancellationTokenSource cancellationToken = null)
+        {
+            var nextStateFunction = new NextStateFunction();
+                nextStateFunction.BallNumber = ballNumber;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(nextStateFunction, cancellationToken);
         }
 
         public Task<string> PopFromFieldRequestAsync(PopFromField1Function popFromField1Function)
@@ -1129,6 +1135,32 @@ namespace IWorld.Service
         public Task<TransactionReceipt> SetStateRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync<SetStateFunction>(null, cancellationToken);
+        }
+
+        public Task<string> SpawnBallRequestAsync(SpawnBallFunction spawnBallFunction)
+        {
+             return ContractHandler.SendRequestAsync(spawnBallFunction);
+        }
+
+        public Task<TransactionReceipt> SpawnBallRequestAndWaitForReceiptAsync(SpawnBallFunction spawnBallFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(spawnBallFunction, cancellationToken);
+        }
+
+        public Task<string> SpawnBallRequestAsync(int ball)
+        {
+            var spawnBallFunction = new SpawnBallFunction();
+                spawnBallFunction.Ball = ball;
+            
+             return ContractHandler.SendRequestAsync(spawnBallFunction);
+        }
+
+        public Task<TransactionReceipt> SpawnBallRequestAndWaitForReceiptAsync(int ball, CancellationTokenSource cancellationToken = null)
+        {
+            var spawnBallFunction = new SpawnBallFunction();
+                spawnBallFunction.Ball = ball;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(spawnBallFunction, cancellationToken);
         }
 
         public Task<string> StartTestRequestAsync(StartTestFunction startTestFunction)

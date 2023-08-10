@@ -245,7 +245,8 @@ namespace IWorld.ContractDefinition
     [Function("nextState")]
     public class NextStateFunctionBase : FunctionMessage
     {
-
+        [Parameter("int32", "ballNumber", 1)]
+        public virtual int BallNumber { get; set; }
     }
 
     public partial class PopFromField1Function : PopFromField1FunctionBase { }
@@ -551,6 +552,15 @@ namespace IWorld.ContractDefinition
     public class SetStateFunctionBase : FunctionMessage
     {
 
+    }
+
+    public partial class SpawnBallFunction : SpawnBallFunctionBase { }
+
+    [Function("spawnBall")]
+    public class SpawnBallFunctionBase : FunctionMessage
+    {
+        [Parameter("int32", "ball", 1)]
+        public virtual int Ball { get; set; }
     }
 
     public partial class StartTestFunction : StartTestFunctionBase { }
@@ -866,6 +876,8 @@ namespace IWorld.ContractDefinition
         [Parameter("bytes32", "schema", 1)]
         public virtual byte[] Schema { get; set; }
     }
+
+
 
 
 

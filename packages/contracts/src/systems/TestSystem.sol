@@ -10,16 +10,16 @@ import { addressToEntityKey } from "../utility/addressToEntityKey.sol";
 contract TestSystem is System {
   function startTest() public {
 
-    for (int32 i = 0; i < 5; i++) {
-      bytes32 key = keccak256(abi.encode(i));
-      Tester.set(key, true);
-      State.set(key, StateType.Normal);
-    }
-
   }
 
-  function nextState() public {
-    bytes32 ball = addressToEntityKey(address(_msgSender()));
+  function spawnBall(int32 ball) public {
+    bytes32 key = keccak256(abi.encode(ball));
+    Tester.set(key, true);
+    State.set(key, StateType.Normal);
+  }
+
+  function nextState(int32 ballNumber) public {
+    bytes32 ball = keccak256(abi.encode(ballNumber));
     uint currentType = uint(State.get(ball));
     currentType = (currentType + 1) % uint(StateType.Count);
     State.set(ball, StateType(currentType));

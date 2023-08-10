@@ -20,17 +20,19 @@ public class TestManager : MonoBehaviour
     int spheres;
 
     // Start is called before the first frame update
-    async void Start()
+    void Start()
     {
         net = NetworkManager.Instance;
-        net.OnNetworkInitialized += SubsribeToState;
-        await Test();
+        net.OnNetworkInitialized += StartTest;
     }
 
-    private void SubsribeToState(NetworkManager _)
+    private void StartTest(NetworkManager _)
     {
         var query = new Query().In(StateTable.ID);
         _counterSub = ObservableExtensions.Subscribe(net.ds.RxQuery(query).ObserveOnMainThread(), OnState);
+
+        Test();
+
     }
 
 
@@ -73,22 +75,34 @@ public class TestManager : MonoBehaviour
 
             BallTest updatedBall = dictionary[record.key];
 
-            Debug.Log("New value type: " + currentValue["value"].GetType(), updatedBall);
-            Debug.Log("New value: " + currentValue["value"]?.ToString(), updatedBall);
-            updatedBall.state = (StateType)((UInt64)currentValue["value"]);
+            StateType newState = (StateType)((UInt64)currentValue["value"]);
+            Debug.Log("Updated: " + newState.ToString(), updatedBall);
+            updatedBall.UpdateState(newState);
 
         }
     }
 
-    async UniTask Test() {
+    async UniTask Test()
+    {
 
         Debug.Log("Test LOADED");
 
-        while (balls.Count < 5) { await UniTask.Delay(100); }
+        // while (balls.Count < 5) { await UniTask.Delay(100); }
 
         Debug.Log("Test STARTING");
 
-        while(true) {
+        for (int i = 0; i < 5; i++)
+        {
+            while (await SpawnBall(i) == false)
+            {
+                await UniTask.Delay(2500);
+            }
+
+            await UniTask.Delay(2500);
+        }
+
+        while (true)
+        {
 
             Debug.Log("Test Loop");
 
@@ -97,7 +111,7 @@ public class TestManager : MonoBehaviour
 
                 StateType lastType = balls[i].state;
 
-                while (await IncrementState(balls[i].key) == false)
+                while (await IncrementState(i) == false)
                 {
                     await UniTask.Delay(2500);
                 }
@@ -109,11 +123,27 @@ public class TestManager : MonoBehaviour
         }
     }
 
-    private async UniTask<bool> IncrementState(string key)
+    private async UniTask<bool> SpawnBall(int index)
     {
         try
         {
-            await net.worldSend.TxExecute<NextStateFunction>();
+            await net.worldSend.TxExecute<SpawnBallFunction>(index);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            // Handle your exception here
+            Debug.LogException(ex);
+            return false;
+        }
+    }
+
+
+    private async UniTask<bool> IncrementState(int index)
+    {
+        try
+        {
+            await net.worldSend.TxExecute<NextStateFunction>(index);
             return true;
         }
         catch (Exception ex)
