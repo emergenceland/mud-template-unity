@@ -7,6 +7,11 @@ export default mudConfig({
       openAccess: true,
     },
   },
+
+  enums: {
+    StateType: ["Normal", "Happy", "Sad", "Count"],
+  },
+
   tables: {
     Counter: {
       schema: {
@@ -15,7 +20,8 @@ export default mudConfig({
       storeArgument: true,
     },
 
-    Player: "bool",
+    Tester: "bool",
+    State: "StateType",
     
   },
   modules: [

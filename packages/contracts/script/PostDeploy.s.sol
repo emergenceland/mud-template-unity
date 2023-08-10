@@ -3,6 +3,7 @@ pragma solidity >=0.8.0;
 
 import { Script } from "forge-std/Script.sol";
 import { IWorld } from "../src/codegen/world/IWorld.sol";
+import { TestSystem } from "../src/systems/TestSystem.sol";
 
 contract PostDeploy is Script {
   function run(address worldAddress) external {
@@ -16,6 +17,7 @@ contract PostDeploy is Script {
 
     // Call increment on the world via the registered function selector
     uint32 newValue = IWorld(worldAddress).increment();
+    IWorld(worldAddress).startTest();
 
     vm.stopBroadcast();
   }

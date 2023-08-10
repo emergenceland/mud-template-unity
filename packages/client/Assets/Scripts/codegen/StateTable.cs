@@ -12,32 +12,32 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    public class PlayerTableUpdate : TypedRecordUpdate<Tuple<PlayerTable?, PlayerTable?>> { }
+    public class StateTableUpdate : TypedRecordUpdate<Tuple<StateTable?, StateTable?>> { }
 
-    public class PlayerTable : IMudTable
+    public class StateTable : IMudTable
     {
-        public readonly static TableId ID = new("", "Player");
+        public readonly static TableId ID = new("", "State");
 
         public override TableId GetTableId()
         {
             return ID;
         }
 
-        public bool? value;
+        public byte? value;
 
         public override Type TableType()
         {
-            return typeof(PlayerTable);
+            return typeof(StateTable);
         }
 
         public override Type TableUpdateType()
         {
-            return typeof(PlayerTableUpdate);
+            return typeof(StateTableUpdate);
         }
 
         public override void SetValues(params object[] functionParameters)
         {
-            value = (bool)functionParameters[0];
+            value = (byte)functionParameters[0];
         }
 
         public override void RecordToTable(Record record)
@@ -45,20 +45,20 @@ namespace DefaultNamespace
             var table = record.value;
             //bool hasValues = false;
 
-            var valueValue = (bool)table["value"];
+            var valueValue = (byte)table["value"];
 
             value = valueValue;
         }
 
         public override IMudTable RecordUpdateToTable(RecordUpdate tableUpdate)
         {
-            PlayerTableUpdate update = (PlayerTableUpdate)tableUpdate;
+            StateTableUpdate update = (StateTableUpdate)tableUpdate;
             return update?.TypedValue.Item1;
         }
 
         public override RecordUpdate CreateTypedRecord(RecordUpdate newUpdate)
         {
-            return new PlayerTableUpdate
+            return new StateTableUpdate
             {
                 TableId = newUpdate.TableId,
                 Key = newUpdate.Key,
@@ -67,27 +67,25 @@ namespace DefaultNamespace
             };
         }
 
-        public static Tuple<PlayerTable?, PlayerTable?> MapUpdates(
-            Tuple<Property?, Property?> value
-        )
+        public static Tuple<StateTable?, StateTable?> MapUpdates(Tuple<Property?, Property?> value)
         {
-            PlayerTable? current = null;
-            PlayerTable? previous = null;
+            StateTable? current = null;
+            StateTable? previous = null;
 
             if (value.Item1 != null)
             {
                 try
                 {
-                    current = new PlayerTable
+                    current = new StateTable
                     {
                         value = value.Item1.TryGetValue("value", out var valueVal)
-                            ? (bool)valueVal
+                            ? (byte)valueVal
                             : default,
                     };
                 }
                 catch (InvalidCastException)
                 {
-                    current = new PlayerTable { value = null, };
+                    current = new StateTable { value = null, };
                 }
             }
 
@@ -95,20 +93,20 @@ namespace DefaultNamespace
             {
                 try
                 {
-                    previous = new PlayerTable
+                    previous = new StateTable
                     {
                         value = value.Item2.TryGetValue("value", out var valueVal)
-                            ? (bool)valueVal
+                            ? (byte)valueVal
                             : default,
                     };
                 }
                 catch (InvalidCastException)
                 {
-                    previous = new PlayerTable { value = null, };
+                    previous = new StateTable { value = null, };
                 }
             }
 
-            return new Tuple<PlayerTable?, PlayerTable?>(current, previous);
+            return new Tuple<StateTable?, StateTable?>(current, previous);
         }
     }
 }

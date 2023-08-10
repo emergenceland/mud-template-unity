@@ -136,6 +136,26 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(deleteRecord1Function, cancellationToken);
         }
 
+        public Task<string> DeleteStateRequestAsync(DeleteStateFunction deleteStateFunction)
+        {
+             return ContractHandler.SendRequestAsync(deleteStateFunction);
+        }
+
+        public Task<string> DeleteStateRequestAsync()
+        {
+             return ContractHandler.SendRequestAsync<DeleteStateFunction>();
+        }
+
+        public Task<TransactionReceipt> DeleteStateRequestAndWaitForReceiptAsync(DeleteStateFunction deleteStateFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(deleteStateFunction, cancellationToken);
+        }
+
+        public Task<TransactionReceipt> DeleteStateRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync<DeleteStateFunction>(null, cancellationToken);
+        }
+
         public Task<string> EmitEphemeralRecordRequestAsync(EmitEphemeralRecord1Function emitEphemeralRecord1Function)
         {
              return ContractHandler.SendRequestAsync(emitEphemeralRecord1Function);
@@ -416,6 +436,26 @@ namespace IWorld.Service
         }
 
 
+
+        public Task<string> NextStateRequestAsync(NextStateFunction nextStateFunction)
+        {
+             return ContractHandler.SendRequestAsync(nextStateFunction);
+        }
+
+        public Task<string> NextStateRequestAsync()
+        {
+             return ContractHandler.SendRequestAsync<NextStateFunction>();
+        }
+
+        public Task<TransactionReceipt> NextStateRequestAndWaitForReceiptAsync(NextStateFunction nextStateFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(nextStateFunction, cancellationToken);
+        }
+
+        public Task<TransactionReceipt> NextStateRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync<NextStateFunction>(null, cancellationToken);
+        }
 
         public Task<string> PopFromFieldRequestAsync(PopFromField1Function popFromField1Function)
         {
@@ -1069,6 +1109,46 @@ namespace IWorld.Service
                 setRecordFunction.Data = data;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setRecordFunction, cancellationToken);
+        }
+
+        public Task<string> SetStateRequestAsync(SetStateFunction setStateFunction)
+        {
+             return ContractHandler.SendRequestAsync(setStateFunction);
+        }
+
+        public Task<string> SetStateRequestAsync()
+        {
+             return ContractHandler.SendRequestAsync<SetStateFunction>();
+        }
+
+        public Task<TransactionReceipt> SetStateRequestAndWaitForReceiptAsync(SetStateFunction setStateFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(setStateFunction, cancellationToken);
+        }
+
+        public Task<TransactionReceipt> SetStateRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync<SetStateFunction>(null, cancellationToken);
+        }
+
+        public Task<string> StartTestRequestAsync(StartTestFunction startTestFunction)
+        {
+             return ContractHandler.SendRequestAsync(startTestFunction);
+        }
+
+        public Task<string> StartTestRequestAsync()
+        {
+             return ContractHandler.SendRequestAsync<StartTestFunction>();
+        }
+
+        public Task<TransactionReceipt> StartTestRequestAndWaitForReceiptAsync(StartTestFunction startTestFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(startTestFunction, cancellationToken);
+        }
+
+        public Task<TransactionReceipt> StartTestRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync<StartTestFunction>(null, cancellationToken);
         }
 
         public Task<string> UpdateInFieldRequestAsync(UpdateInFieldFunction updateInFieldFunction)

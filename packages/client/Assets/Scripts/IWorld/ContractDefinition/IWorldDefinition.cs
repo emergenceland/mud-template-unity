@@ -64,6 +64,14 @@ namespace IWorld.ContractDefinition
         public virtual List<byte[]> Key { get; set; }
     }
 
+    public partial class DeleteStateFunction : DeleteStateFunctionBase { }
+
+    [Function("deleteState")]
+    public class DeleteStateFunctionBase : FunctionMessage
+    {
+
+    }
+
     public partial class EmitEphemeralRecord1Function : EmitEphemeralRecord1FunctionBase { }
 
     [Function("emitEphemeralRecord")]
@@ -228,6 +236,14 @@ namespace IWorld.ContractDefinition
 
     [Function("isStore")]
     public class IsStoreFunctionBase : FunctionMessage
+    {
+
+    }
+
+    public partial class NextStateFunction : NextStateFunctionBase { }
+
+    [Function("nextState")]
+    public class NextStateFunctionBase : FunctionMessage
     {
 
     }
@@ -529,6 +545,22 @@ namespace IWorld.ContractDefinition
         public virtual byte[] Data { get; set; }
     }
 
+    public partial class SetStateFunction : SetStateFunctionBase { }
+
+    [Function("setState")]
+    public class SetStateFunctionBase : FunctionMessage
+    {
+
+    }
+
+    public partial class StartTestFunction : StartTestFunctionBase { }
+
+    [Function("startTest")]
+    public class StartTestFunctionBase : FunctionMessage
+    {
+
+    }
+
     public partial class UpdateInFieldFunction : UpdateInFieldFunctionBase { }
 
     [Function("updateInField")]
@@ -770,6 +802,8 @@ namespace IWorld.ContractDefinition
 
 
 
+
+
     public partial class GetFieldOutputDTO : GetFieldOutputDTOBase { }
 
     [FunctionOutput]
@@ -832,6 +866,12 @@ namespace IWorld.ContractDefinition
         [Parameter("bytes32", "schema", 1)]
         public virtual byte[] Schema { get; set; }
     }
+
+
+
+
+
+
 
 
 
