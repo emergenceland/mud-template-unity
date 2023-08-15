@@ -21,7 +21,9 @@ export default mudConfig({
     },
 
     Tester: "bool",
+    BytesTest: "bytes32",
     State: "StateType",
+    Inflate: "uint32",
     
   },
   modules: [

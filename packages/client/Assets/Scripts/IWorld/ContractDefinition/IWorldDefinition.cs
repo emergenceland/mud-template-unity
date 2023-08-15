@@ -64,12 +64,22 @@ namespace IWorld.ContractDefinition
         public virtual List<byte[]> Key { get; set; }
     }
 
-    public partial class DeleteStateFunction : DeleteStateFunctionBase { }
+    public partial class DeleteSetFunction : DeleteSetFunctionBase { }
 
-    [Function("deleteState")]
-    public class DeleteStateFunctionBase : FunctionMessage
+    [Function("deleteSet")]
+    public class DeleteSetFunctionBase : FunctionMessage
     {
+        [Parameter("bytes32", "ball", 1)]
+        public virtual byte[] Ball { get; set; }
+    }
 
+    public partial class DeleteSimpleFunction : DeleteSimpleFunctionBase { }
+
+    [Function("deleteSimple")]
+    public class DeleteSimpleFunctionBase : FunctionMessage
+    {
+        [Parameter("bytes32", "ball", 1)]
+        public virtual byte[] Ball { get; set; }
     }
 
     public partial class EmitEphemeralRecord1Function : EmitEphemeralRecord1FunctionBase { }
@@ -238,15 +248,6 @@ namespace IWorld.ContractDefinition
     public class IsStoreFunctionBase : FunctionMessage
     {
 
-    }
-
-    public partial class NextStateFunction : NextStateFunctionBase { }
-
-    [Function("nextState")]
-    public class NextStateFunctionBase : FunctionMessage
-    {
-        [Parameter("int32", "ballNumber", 1)]
-        public virtual int BallNumber { get; set; }
     }
 
     public partial class PopFromField1Function : PopFromField1FunctionBase { }
@@ -458,6 +459,15 @@ namespace IWorld.ContractDefinition
         public virtual string Grantee { get; set; }
     }
 
+    public partial class SetDeleteFunction : SetDeleteFunctionBase { }
+
+    [Function("setDelete")]
+    public class SetDeleteFunctionBase : FunctionMessage
+    {
+        [Parameter("bytes32", "ball", 1)]
+        public virtual byte[] Ball { get; set; }
+    }
+
     public partial class SetFieldFunction : SetFieldFunctionBase { }
 
     [Function("setField")]
@@ -546,12 +556,13 @@ namespace IWorld.ContractDefinition
         public virtual byte[] Data { get; set; }
     }
 
-    public partial class SetStateFunction : SetStateFunctionBase { }
+    public partial class SetSimpleFunction : SetSimpleFunctionBase { }
 
-    [Function("setState")]
-    public class SetStateFunctionBase : FunctionMessage
+    [Function("setSimple")]
+    public class SetSimpleFunctionBase : FunctionMessage
     {
-
+        [Parameter("bytes32", "ball", 1)]
+        public virtual byte[] Ball { get; set; }
     }
 
     public partial class SpawnBallFunction : SpawnBallFunctionBase { }
@@ -801,6 +812,8 @@ namespace IWorld.ContractDefinition
         [Parameter("address", "system", 1)]
         public virtual string System { get; set; }
     }
+
+
 
 
 

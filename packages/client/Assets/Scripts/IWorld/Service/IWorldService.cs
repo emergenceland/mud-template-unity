@@ -136,24 +136,56 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(deleteRecord1Function, cancellationToken);
         }
 
-        public Task<string> DeleteStateRequestAsync(DeleteStateFunction deleteStateFunction)
+        public Task<string> DeleteSetRequestAsync(DeleteSetFunction deleteSetFunction)
         {
-             return ContractHandler.SendRequestAsync(deleteStateFunction);
+             return ContractHandler.SendRequestAsync(deleteSetFunction);
         }
 
-        public Task<string> DeleteStateRequestAsync()
+        public Task<TransactionReceipt> DeleteSetRequestAndWaitForReceiptAsync(DeleteSetFunction deleteSetFunction, CancellationTokenSource cancellationToken = null)
         {
-             return ContractHandler.SendRequestAsync<DeleteStateFunction>();
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(deleteSetFunction, cancellationToken);
         }
 
-        public Task<TransactionReceipt> DeleteStateRequestAndWaitForReceiptAsync(DeleteStateFunction deleteStateFunction, CancellationTokenSource cancellationToken = null)
+        public Task<string> DeleteSetRequestAsync(byte[] ball)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(deleteStateFunction, cancellationToken);
+            var deleteSetFunction = new DeleteSetFunction();
+                deleteSetFunction.Ball = ball;
+            
+             return ContractHandler.SendRequestAsync(deleteSetFunction);
         }
 
-        public Task<TransactionReceipt> DeleteStateRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> DeleteSetRequestAndWaitForReceiptAsync(byte[] ball, CancellationTokenSource cancellationToken = null)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync<DeleteStateFunction>(null, cancellationToken);
+            var deleteSetFunction = new DeleteSetFunction();
+                deleteSetFunction.Ball = ball;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(deleteSetFunction, cancellationToken);
+        }
+
+        public Task<string> DeleteSimpleRequestAsync(DeleteSimpleFunction deleteSimpleFunction)
+        {
+             return ContractHandler.SendRequestAsync(deleteSimpleFunction);
+        }
+
+        public Task<TransactionReceipt> DeleteSimpleRequestAndWaitForReceiptAsync(DeleteSimpleFunction deleteSimpleFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(deleteSimpleFunction, cancellationToken);
+        }
+
+        public Task<string> DeleteSimpleRequestAsync(byte[] ball)
+        {
+            var deleteSimpleFunction = new DeleteSimpleFunction();
+                deleteSimpleFunction.Ball = ball;
+            
+             return ContractHandler.SendRequestAsync(deleteSimpleFunction);
+        }
+
+        public Task<TransactionReceipt> DeleteSimpleRequestAndWaitForReceiptAsync(byte[] ball, CancellationTokenSource cancellationToken = null)
+        {
+            var deleteSimpleFunction = new DeleteSimpleFunction();
+                deleteSimpleFunction.Ball = ball;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(deleteSimpleFunction, cancellationToken);
         }
 
         public Task<string> EmitEphemeralRecordRequestAsync(EmitEphemeralRecord1Function emitEphemeralRecord1Function)
@@ -436,32 +468,6 @@ namespace IWorld.Service
         }
 
 
-
-        public Task<string> NextStateRequestAsync(NextStateFunction nextStateFunction)
-        {
-             return ContractHandler.SendRequestAsync(nextStateFunction);
-        }
-
-        public Task<TransactionReceipt> NextStateRequestAndWaitForReceiptAsync(NextStateFunction nextStateFunction, CancellationTokenSource cancellationToken = null)
-        {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(nextStateFunction, cancellationToken);
-        }
-
-        public Task<string> NextStateRequestAsync(int ballNumber)
-        {
-            var nextStateFunction = new NextStateFunction();
-                nextStateFunction.BallNumber = ballNumber;
-            
-             return ContractHandler.SendRequestAsync(nextStateFunction);
-        }
-
-        public Task<TransactionReceipt> NextStateRequestAndWaitForReceiptAsync(int ballNumber, CancellationTokenSource cancellationToken = null)
-        {
-            var nextStateFunction = new NextStateFunction();
-                nextStateFunction.BallNumber = ballNumber;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(nextStateFunction, cancellationToken);
-        }
 
         public Task<string> PopFromFieldRequestAsync(PopFromField1Function popFromField1Function)
         {
@@ -927,6 +933,32 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(revokeAccessFunction, cancellationToken);
         }
 
+        public Task<string> SetDeleteRequestAsync(SetDeleteFunction setDeleteFunction)
+        {
+             return ContractHandler.SendRequestAsync(setDeleteFunction);
+        }
+
+        public Task<TransactionReceipt> SetDeleteRequestAndWaitForReceiptAsync(SetDeleteFunction setDeleteFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(setDeleteFunction, cancellationToken);
+        }
+
+        public Task<string> SetDeleteRequestAsync(byte[] ball)
+        {
+            var setDeleteFunction = new SetDeleteFunction();
+                setDeleteFunction.Ball = ball;
+            
+             return ContractHandler.SendRequestAsync(setDeleteFunction);
+        }
+
+        public Task<TransactionReceipt> SetDeleteRequestAndWaitForReceiptAsync(byte[] ball, CancellationTokenSource cancellationToken = null)
+        {
+            var setDeleteFunction = new SetDeleteFunction();
+                setDeleteFunction.Ball = ball;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(setDeleteFunction, cancellationToken);
+        }
+
         public Task<string> SetFieldRequestAsync(SetFieldFunction setFieldFunction)
         {
              return ContractHandler.SendRequestAsync(setFieldFunction);
@@ -1117,24 +1149,30 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setRecordFunction, cancellationToken);
         }
 
-        public Task<string> SetStateRequestAsync(SetStateFunction setStateFunction)
+        public Task<string> SetSimpleRequestAsync(SetSimpleFunction setSimpleFunction)
         {
-             return ContractHandler.SendRequestAsync(setStateFunction);
+             return ContractHandler.SendRequestAsync(setSimpleFunction);
         }
 
-        public Task<string> SetStateRequestAsync()
+        public Task<TransactionReceipt> SetSimpleRequestAndWaitForReceiptAsync(SetSimpleFunction setSimpleFunction, CancellationTokenSource cancellationToken = null)
         {
-             return ContractHandler.SendRequestAsync<SetStateFunction>();
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(setSimpleFunction, cancellationToken);
         }
 
-        public Task<TransactionReceipt> SetStateRequestAndWaitForReceiptAsync(SetStateFunction setStateFunction, CancellationTokenSource cancellationToken = null)
+        public Task<string> SetSimpleRequestAsync(byte[] ball)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(setStateFunction, cancellationToken);
+            var setSimpleFunction = new SetSimpleFunction();
+                setSimpleFunction.Ball = ball;
+            
+             return ContractHandler.SendRequestAsync(setSimpleFunction);
         }
 
-        public Task<TransactionReceipt> SetStateRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> SetSimpleRequestAndWaitForReceiptAsync(byte[] ball, CancellationTokenSource cancellationToken = null)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync<SetStateFunction>(null, cancellationToken);
+            var setSimpleFunction = new SetSimpleFunction();
+                setSimpleFunction.Ball = ball;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(setSimpleFunction, cancellationToken);
         }
 
         public Task<string> SpawnBallRequestAsync(SpawnBallFunction spawnBallFunction)
