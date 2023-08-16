@@ -45,14 +45,8 @@ namespace <%= namespace %>
 			//bool hasValues = false;
 
 			<% for (const field of fields) { -%>
-				var <%= field.key %>Value = 
-				<% if (field.type == "System.Numerics.BigInteger") { -%>
-					new System.Numerics.BigInteger((int)table["<%= field.key %>"]);
-					<% } else { -%>
-					(<%= field.type %>)table["<%= field.key %>"];
-				<% } -%> 
+				var <%= field.key %>Value = (<%= field.type %>)table["<%= field.key %>"];
 				<%= field.key %> = <%= field.key %>Value;	
-
 			<% } -%>
 
 		}
