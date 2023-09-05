@@ -26,6 +26,15 @@ namespace <%= namespace %>
 		public override Type TableType() {return typeof(<%= tableClassName %>);}
 		public override Type TableUpdateType() {return typeof(<%= tableClassName %>Update);}
 		
+		public override bool Equals (object? obj) {
+			<%= tableClassName %> other = (<%= tableClassName %>)obj;
+
+			if(other == null) {return false;}
+			<% for (const field of fields) { -%>
+				if(<%= field.key %> != other.<%= field.key %>) {return false;}
+			<% } -%>
+			return true;
+		}
 		public override void SetValues(params object[] functionParameters){
 
 			<% var i = 0 -%>

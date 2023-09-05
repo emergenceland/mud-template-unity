@@ -35,6 +35,21 @@ namespace DefaultNamespace
             return typeof(TesterTableUpdate);
         }
 
+        public override bool Equals(object? obj)
+        {
+            TesterTable other = (TesterTable)obj;
+
+            if (other == null)
+            {
+                return false;
+            }
+            if (value != other.value)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public override void SetValues(params object[] functionParameters)
         {
             value = (bool)functionParameters[0];
@@ -46,7 +61,6 @@ namespace DefaultNamespace
             //bool hasValues = false;
 
             var valueValue = (bool)table["value"];
-
             value = valueValue;
         }
 

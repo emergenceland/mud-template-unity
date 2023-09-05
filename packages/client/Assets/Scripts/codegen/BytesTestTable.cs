@@ -36,6 +36,21 @@ namespace DefaultNamespace
             return typeof(BytesTestTableUpdate);
         }
 
+        public override bool Equals(object? obj)
+        {
+            BytesTestTable other = (BytesTestTable)obj;
+
+            if (other == null)
+            {
+                return false;
+            }
+            if (value != other.value)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public override void SetValues(params object[] functionParameters)
         {
             value = (string)functionParameters[0];
@@ -47,7 +62,6 @@ namespace DefaultNamespace
             //bool hasValues = false;
 
             var valueValue = (string)table["value"];
-
             value = valueValue;
         }
 

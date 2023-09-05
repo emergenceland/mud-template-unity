@@ -35,6 +35,21 @@ namespace DefaultNamespace
             return typeof(StateTableUpdate);
         }
 
+        public override bool Equals(object? obj)
+        {
+            StateTable other = (StateTable)obj;
+
+            if (other == null)
+            {
+                return false;
+            }
+            if (value != other.value)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public override void SetValues(params object[] functionParameters)
         {
             value = (byte)functionParameters[0];
@@ -46,7 +61,6 @@ namespace DefaultNamespace
             //bool hasValues = false;
 
             var valueValue = (byte)table["value"];
-
             value = valueValue;
         }
 

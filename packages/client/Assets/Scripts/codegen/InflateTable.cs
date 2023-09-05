@@ -35,6 +35,21 @@ namespace DefaultNamespace
             return typeof(InflateTableUpdate);
         }
 
+        public override bool Equals(object? obj)
+        {
+            InflateTable other = (InflateTable)obj;
+
+            if (other == null)
+            {
+                return false;
+            }
+            if (value != other.value)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public override void SetValues(params object[] functionParameters)
         {
             value = (ulong)(int)functionParameters[0];
@@ -46,7 +61,6 @@ namespace DefaultNamespace
             //bool hasValues = false;
 
             var valueValue = (ulong)table["value"];
-
             value = valueValue;
         }
 

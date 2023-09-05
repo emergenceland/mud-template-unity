@@ -14,6 +14,7 @@ public class CounterManager : MonoBehaviour
     private IDisposable _counterSub;
     public GameObject prefab;
     private NetworkManager net;
+    int lastVal = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -33,10 +34,17 @@ public class CounterManager : MonoBehaviour
         // first element of tuple is set records, second is deleted records
         foreach (var record in update.SetRecords)
         {
-            var currentValue = record.value;
-            if (currentValue == null) return;
+            if(record.value == null) return;
+
+            var currentValue = (ulong)record.value["value"];
             Debug.Log("Counter is now: " + currentValue);
-            SpawnPrefab();
+
+            int change = (int)currentValue - lastVal;
+            for (int i = 0; i < change; i++) {
+                SpawnPrefab();
+            }
+
+            lastVal = (int)currentValue;
         }
     }
 

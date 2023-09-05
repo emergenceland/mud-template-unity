@@ -3,13 +3,27 @@ pragma solidity >=0.8.0;
 import { System } from "@latticexyz/world/src/System.sol";
 import { IStore } from "@latticexyz/store/src/IStore.sol";
 import { Counter } from "../codegen/Tables.sol";
-import { Tester, State, Inflate } from "../codegen/Tables.sol";
+import { Tester, State, Inflate, AllTypes } from "../codegen/Tables.sol";
 import { StateType } from "../codegen/Types.sol";
 import { addressToEntityKey } from "../utility/addressToEntityKey.sol";
 
 contract TestSystem is System {
 
   function startTest() public {
+    bytes32 player = addressToEntityKey(address(_msgSender()));
+    int256[2] memory staticTest;
+    staticTest[0] = 3;
+    staticTest[1] = 4;
+    uint256[] memory dynamicTest = new uint256[](3);
+    dynamicTest[0] = 5;
+    dynamicTest[1] = 6;
+    dynamicTest[2] = 7;
+    bool[] memory emptyTest = new bool[](0);
+    
+    AllTypes.set(player, true, int32(-3), uint32(5), uint256(50), StateType.Happy, player);
+    // AllTypes.set(player, true, int32(-3), uint32(5), int256(-40), uint256(50), StateType.Happy, player);
+    // AllTypes.set(player, true, -3, 5, -40, 50, StateType.Happy, player, staticTest, dynamicTest, emptyTest);
+    
     for (int32 i = 0; i < 5; i++) {
       bytes32 key = keccak256(abi.encode(i));
       Tester.set(key, true);

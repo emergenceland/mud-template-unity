@@ -8,3 +8,4 @@ import { Tester, TesterTableId } from "./tables/Tester.sol";
 import { BytesTest, BytesTestTableId } from "./tables/BytesTest.sol";
 import { State, StateTableId } from "./tables/State.sol";
 import { Inflate, InflateTableId } from "./tables/Inflate.sol";
+import { AllTypes, AllTypesTableId } from "./tables/AllTypes.sol";
