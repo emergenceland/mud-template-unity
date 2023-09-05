@@ -8,12 +8,14 @@ export default mudConfig({
     },
   },
 
+  //create enum types here
   enums: {
     StateType: ["Normal", "Happy", "Sad", "Count"],
   },
 
   tables: {
 
+    //used in the counter example scene
     Counter: {
       schema: {
         value: "uint32",
@@ -22,12 +24,11 @@ export default mudConfig({
     },
 
 
-
+    //used in test scenes 
     Tester: "bool",
     BytesTest: "bytes32",
     State: "StateType",
     Inflate: "uint32",
-
     AllTypes: {
       dataStruct: false,
       schema: {
