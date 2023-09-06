@@ -3,13 +3,14 @@ pragma solidity >=0.8.0;
 import { System } from "@latticexyz/world/src/System.sol";
 import { IStore } from "@latticexyz/store/src/IStore.sol";
 import { Counter } from "../codegen/Tables.sol";
-import { Tester, State, Inflate, AllTypes } from "../codegen/Tables.sol";
+import { Tester, State, Position, PositionData, AllTypes, Balls } from "../codegen/Tables.sol";
 import { StateType } from "../codegen/Types.sol";
 import { addressToEntityKey } from "../utility/addressToEntityKey.sol";
 
 contract TestSystem is System {
 
   function startTest() public {
+
     bytes32 player = addressToEntityKey(address(_msgSender()));
     int256[2] memory staticTest;
     staticTest[0] = 3;
@@ -20,22 +21,58 @@ contract TestSystem is System {
     dynamicTest[2] = 7;
     bool[] memory emptyTest = new bool[](0);
     
-    AllTypes.set(player, true, int32(-3), uint32(5), uint256(50), StateType.Happy, player);
+    AllTypes.set(player, true, int32(-3), uint32(5), uint256(50), StateType.Happy, player, address(_msgSender()));
+
+    for (uint i = 0; i < 2; i++) {
+      spawnBall();
+    }
+
     // AllTypes.set(player, true, int32(-3), uint32(5), int256(-40), uint256(50), StateType.Happy, player);
     // AllTypes.set(player, true, -3, 5, -40, 50, StateType.Happy, player, staticTest, dynamicTest, emptyTest);
-    
-    for (int32 i = 0; i < 5; i++) {
-      bytes32 key = keccak256(abi.encode(i));
-      Tester.set(key, true);
-      State.set(key, StateType.Normal);
+
+  }
+
+  
+  function updateAllBalls() public {
+
+    spawnBall();
+
+    uint ballCount =  uint(uint32(Balls.get()));
+    for(uint i = 0; i < ballCount; i++) {
+      moveBall(keccak256(abi.encode(i)));
     }
   }
 
-  function spawnBall(int32 ball) public {
-    bytes32 key = keccak256(abi.encode(ball));
-    Tester.set(key, true);
+
+  function moveBall(bytes32 key) public {
+
+    int32 y = Tester.get(key);
+    PositionData memory pos = Position.get(key);
+
+    if(pos.x == 2 && pos.hasWaited == false) {
+      //test what happens if we set the same position
+      Position.set(key, PositionData(pos.x, y, true));
+    } else if(pos.x == 3) {
+      //test record delete
+      Position.deleteRecord(key);
+    } else {
+      //test normal update (and set when the record has been deleted)
+      Position.set(key, PositionData(pos.x + 1, y, false));
+    }
+
+  }
+
+  function spawnBall() public {
+
+    int32 ballNumber = Balls.get();
+
+    bytes32 key = keccak256(abi.encode(ballNumber));
+    Tester.set(key, ballNumber);
     State.set(key, StateType.Normal);
-    Inflate.set(key, 0);
+    Position.set(key, PositionData(0,ballNumber, false));
+
+    Balls.set(ballNumber + 1);
+
   }
 
   function setSimple(bytes32 ball) public {
@@ -43,16 +80,10 @@ contract TestSystem is System {
     currentType = (currentType + 1) % uint(StateType.Count);
     State.set(ball, StateType(currentType));
 
-    uint32 inflate = Inflate.get(ball);
-    Inflate.set(ball, inflate+1);
   }
 
   function deleteSimple(bytes32 ball) public {
-
     State.deleteRecord(ball);
-
-    uint32 inflate = Inflate.get(ball);
-    Inflate.set(ball, inflate+1);
   }
 
   function setDelete(bytes32 ball) public {
@@ -60,9 +91,6 @@ contract TestSystem is System {
     currentType = (currentType + 1) % uint(StateType.Count);
     State.set(ball, StateType(currentType));
     State.deleteRecord(ball);
-
-    uint32 inflate = Inflate.get(ball);
-    Inflate.set(ball, inflate+1);
   }
 
   function deleteSet(bytes32 ball) public {
@@ -70,8 +98,5 @@ contract TestSystem is System {
     currentType = (currentType + 1) % uint(StateType.Count);
     State.deleteRecord(ball);
     State.set(ball, StateType(currentType));
-
-    uint32 inflate = Inflate.get(ball);
-    Inflate.set(ball, inflate+1);
   }
 }

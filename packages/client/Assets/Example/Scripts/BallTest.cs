@@ -25,21 +25,125 @@ public enum StateType
 
 public class BallTest : MonoBehaviour
 {
+
+    public const int txDelay = 2000;
+
+    public bool log = false; 
     public int ballIndex;
     public TextMesh text;
     public string key, keyBytes32;
+    public UpdateType expectedType;
+    public UpdateType currentType;
+
+    
+
+    [Header("Position Test")]
+    public bool hasUpdatedPosition = false;
+    public bool hasWaited = false;
+    public GameObject error;
+    public Vector3 currentPos;
+    public Vector3 expectedPos;
+    float moveTime = 0f;
+    bool txSending = false;
+    bool recievedUpdate = false;
+
+
+    [Header("State Test")]
     public StateType state;
     public StateType transactionState;
-    public UpdateType expectedType;
+
+    [Header("Ball")]
     public Material[] materials;
+    public Material setRecord, deleteRecord, sameValue;
     public MeshRenderer mr;
-    int txDelay = 2000;
-    bool txSending = false;
 
-    public void UpdateState(StateType newState, UpdateType updateType)
-    {
 
-        Debug.Log("Updated " + ballIndex + " " + updateType.ToString(), this);
+
+    public void UpdatePosition(Vector3 newPosition, bool newHasWaited, UpdateType newUpdateType) {
+
+        ballIndex = (int)newPosition.y;
+        hasWaited = newHasWaited;
+
+        if(newUpdateType == UpdateType.DeleteRecord) {
+            mr.sharedMaterial = deleteRecord;
+        } else {
+            if (transform.position == newPosition) { mr.sharedMaterial = sameValue; }
+            else { mr.sharedMaterial = setRecord; }
+        }
+
+        if(log) Debug.Log("Updated " + Describe(newPosition, newUpdateType), this);
+        if(log) Debug.Log("Expected " + Describe(expectedPos, expectedType), this);
+
+        transform.position = newPosition;
+        currentType = newUpdateType;
+
+        text.text = newUpdateType.ToString();
+
+        if(hasUpdatedPosition) {
+            // Debug.Assert(newState == transactionState);
+            error.SetActive(expectedPos != newPosition || expectedType != newUpdateType);
+            Debug.Assert(expectedPos == newPosition, "--POS MISMATCH--", this);
+            Debug.Assert(expectedType == newUpdateType, "--TYPE MISMATCH--", this);
+
+        } else {
+            error.SetActive(false);
+        }
+
+        recievedUpdate = true;
+        hasUpdatedPosition = true;
+
+        SetExpected();
+
+    }
+
+
+    void SetExpected() {
+        
+        currentPos = transform.position;
+
+        if(currentPos.x == 2 && hasWaited == false) {
+            expectedPos = currentPos;
+            expectedType = UpdateType.SetRecord;
+        } else if(currentPos.x == 3) {
+            expectedPos = currentType == UpdateType.SetRecord ? transform.position : Vector3.right + Vector3.up * ballIndex;
+            expectedType = currentType == UpdateType.SetRecord ? UpdateType.DeleteRecord : UpdateType.SetRecord;
+        } else {
+            expectedPos = currentPos + Vector3.right;
+            expectedType = UpdateType.SetRecord;
+        }
+
+        recievedUpdate = false; 
+    }
+
+    public string Describe(Vector3 pos, UpdateType updateType) {
+        return "Pos: " + ((int)pos.x).ToString() + "," + ((int)pos.y).ToString() + " Type: " + updateType.ToString();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void UpdateState(StateType newState, UpdateType updateType) {
+
+        if(log) Debug.Log("Updated " + ballIndex + " " + updateType.ToString(), this);
 
         state = newState;
         mr.sharedMaterial = materials[(int)newState];
@@ -82,32 +186,32 @@ public class BallTest : MonoBehaviour
         {
             transactionState = (StateType)(((int)state + 1) % (int)StateType.Count);
             expectedType = UpdateType.SetRecord;
-            Debug.Log("[SET]");
-            Debug.Log("[Expected: " + expectedType.ToString() + "]");
+            if(log) Debug.Log("[SET]");
+            if(log) Debug.Log("[Expected: " + expectedType.ToString() + "]");
             await RunTxUntilItPasses<SetSimpleFunction>();
         }
         else if (function == 1)
         {
             transactionState = (StateType)(((int)state + 1) % (int)StateType.Count);
             expectedType = UpdateType.DeleteRecord;
-            Debug.Log("[DELETE]");
-            Debug.Log("[Expected: " + expectedType.ToString() + "]");
+            if(log) Debug.Log("[DELETE]");
+            if(log) Debug.Log("[Expected: " + expectedType.ToString() + "]");
             await RunTxUntilItPasses<DeleteSimpleFunction>();
         }
         else if (function == 2)
         {
             transactionState = (StateType)(((int)state + 1) % (int)StateType.Count);
             expectedType = UpdateType.SetRecord;
-            Debug.Log("[DELETESET]");
-            Debug.Log("[Expected: " + expectedType.ToString() + "]");
+            if(log) Debug.Log("[DELETESET]");
+            if(log) Debug.Log("[Expected: " + expectedType.ToString() + "]");
             await RunTxUntilItPasses<DeleteSetFunction>();
         }
         else if (function == 3)
         {
             transactionState = (StateType)(((int)state + 1) % (int)StateType.Count);
             expectedType = UpdateType.DeleteRecord;
-            Debug.Log("[SETDELETE]");
-            Debug.Log("[Expected: " + expectedType.ToString() + "]");
+            if(log) Debug.Log("[SETDELETE]");
+            if(log) Debug.Log("[Expected: " + expectedType.ToString() + "]");
             await RunTxUntilItPasses<SetDeleteFunction>();
         } 
 
@@ -115,7 +219,7 @@ public class BallTest : MonoBehaviour
     }
 
 
-    static byte[] HexStringToByteArray(string hexString)
+    static byte[] HexStringToBytes(string hexString)
     {
         int length = hexString.Length;
         byte[] byteArray = new byte[length / 2];
@@ -129,33 +233,23 @@ public class BallTest : MonoBehaviour
     }
 
 
-    private async UniTask RunTxUntilItPasses<TFunction>() where TFunction : FunctionMessage, new()
-    {
-
-        txSending = true;
-        while (await SendTx<TFunction>() == false)
-        {
-            await UniTask.Delay(txDelay);
-        }
-        txSending = false;
+    public async UniTask RunTxUntilItPasses<TFunction>() where TFunction : FunctionMessage, new() {
+        while (await SendTx<TFunction>() == false){ await UniTask.Delay(txDelay);}
 
     }
 
     
-    private async UniTask<bool> SendTx<TFunction>() where TFunction : FunctionMessage, new() 
+    public async UniTask<bool> SendTx<TFunction>() where TFunction : FunctionMessage, new() 
     {
+        if(log) Debug.Log("Sending", this);
+        byte[] byteHexArray = HexStringToBytes(key.Replace("0x", ""));
 
-        byte[] byteHexArray = HexStringToByteArray(key.Replace("0x", ""));
-
-        try
-        {
-            await NetworkManager.Instance.worldSend.TxExecute<TFunction>(byteHexArray);
-            return true;
+        try {
+            return await NetworkManager.Instance.worldSend.TxExecute<TFunction>(byteHexArray);
         }
-        catch (System.Exception ex)
-        {
+        catch (System.Exception ex) {
             // Handle your exception here
-            Debug.LogException(ex);
+            if(log) Debug.LogException(ex, this);
             return false;
         }
     }

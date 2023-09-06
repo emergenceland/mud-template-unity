@@ -23,7 +23,7 @@ namespace DefaultNamespace
             return ID;
         }
 
-        public bool? value;
+        public long? value;
 
         public override Type TableType()
         {
@@ -52,7 +52,7 @@ namespace DefaultNamespace
 
         public override void SetValues(params object[] functionParameters)
         {
-            value = (bool)functionParameters[0];
+            value = (long)(int)functionParameters[0];
         }
 
         public override void RecordToTable(Record record)
@@ -60,7 +60,7 @@ namespace DefaultNamespace
             var table = record.value;
             //bool hasValues = false;
 
-            var valueValue = (bool)table["value"];
+            var valueValue = (long)table["value"];
             value = valueValue;
         }
 
@@ -95,7 +95,7 @@ namespace DefaultNamespace
                     current = new TesterTable
                     {
                         value = value.Item1.TryGetValue("value", out var valueVal)
-                            ? (bool)valueVal
+                            ? (long)valueVal
                             : default,
                     };
                 }
@@ -112,7 +112,7 @@ namespace DefaultNamespace
                     previous = new TesterTable
                     {
                         value = value.Item2.TryGetValue("value", out var valueVal)
-                            ? (bool)valueVal
+                            ? (long)valueVal
                             : default,
                     };
                 }

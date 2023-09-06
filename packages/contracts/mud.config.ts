@@ -25,10 +25,22 @@ export default mudConfig({
 
 
     //used in test scenes 
-    Tester: "bool",
-    BytesTest: "bytes32",
+    Tester: "int32",
     State: "StateType",
-    Inflate: "uint32",
+    //universal ball counter
+    Balls: {
+        keySchema: {},
+        schema: {count: "int32",},
+    },
+
+    Position: {
+      schema: {
+        x: "int32",
+        y: "int32",
+        hasWaited: "bool",
+      },
+    },
+
     AllTypes: {
       dataStruct: false,
       schema: {
@@ -39,6 +51,7 @@ export default mudConfig({
         bigUintTest: "uint256",
         enumTest: "StateType",
         entityTest: "bytes32",
+        addressTest: "address",
         // staticArrayTest: "int256[2]",
         // dynamicArrayTest: "uint256[]",
         // emptyArrayTest: "bool[]",

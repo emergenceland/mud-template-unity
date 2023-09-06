@@ -250,6 +250,15 @@ namespace IWorld.ContractDefinition
 
     }
 
+    public partial class MoveBallFunction : MoveBallFunctionBase { }
+
+    [Function("moveBall")]
+    public class MoveBallFunctionBase : FunctionMessage
+    {
+        [Parameter("bytes32", "key", 1)]
+        public virtual byte[] Key { get; set; }
+    }
+
     public partial class PopFromField1Function : PopFromField1FunctionBase { }
 
     [Function("popFromField")]
@@ -570,14 +579,21 @@ namespace IWorld.ContractDefinition
     [Function("spawnBall")]
     public class SpawnBallFunctionBase : FunctionMessage
     {
-        [Parameter("int32", "ball", 1)]
-        public virtual int Ball { get; set; }
+
     }
 
     public partial class StartTestFunction : StartTestFunctionBase { }
 
     [Function("startTest")]
     public class StartTestFunctionBase : FunctionMessage
+    {
+
+    }
+
+    public partial class UpdateAllBallsFunction : UpdateAllBallsFunctionBase { }
+
+    [Function("updateAllBalls")]
+    public class UpdateAllBallsFunctionBase : FunctionMessage
     {
 
     }
@@ -889,6 +905,10 @@ namespace IWorld.ContractDefinition
         [Parameter("bytes32", "schema", 1)]
         public virtual byte[] Schema { get; set; }
     }
+
+
+
+
 
 
 

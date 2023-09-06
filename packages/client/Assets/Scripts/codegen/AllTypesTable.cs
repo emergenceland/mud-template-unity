@@ -29,6 +29,7 @@ namespace DefaultNamespace
         public System.Numerics.BigInteger? bigUintTest;
         public byte? enumTest;
         public string? entityTest;
+        public string? addressTest;
 
         public override Type TableType()
         {
@@ -72,6 +73,10 @@ namespace DefaultNamespace
             {
                 return false;
             }
+            if (addressTest != other.addressTest)
+            {
+                return false;
+            }
             return true;
         }
 
@@ -88,6 +93,8 @@ namespace DefaultNamespace
             enumTest = (byte)functionParameters[4];
 
             entityTest = (string)functionParameters[5];
+
+            addressTest = (string)functionParameters[6];
         }
 
         public override void RecordToTable(Record record)
@@ -107,6 +114,8 @@ namespace DefaultNamespace
             enumTest = enumTestValue;
             var entityTestValue = (string)table["entityTest"];
             entityTest = entityTestValue;
+            var addressTestValue = (string)table["addressTest"];
+            addressTest = addressTestValue;
         }
 
         public override IMudTable RecordUpdateToTable(RecordUpdate tableUpdate)
@@ -157,6 +166,9 @@ namespace DefaultNamespace
                         entityTest = value.Item1.TryGetValue("entityTest", out var entityTestVal)
                             ? (string)entityTestVal
                             : default,
+                        addressTest = value.Item1.TryGetValue("addressTest", out var addressTestVal)
+                            ? (string)addressTestVal
+                            : default,
                     };
                 }
                 catch (InvalidCastException)
@@ -169,6 +181,7 @@ namespace DefaultNamespace
                         bigUintTest = null,
                         enumTest = null,
                         entityTest = null,
+                        addressTest = null,
                     };
                 }
             }
@@ -197,6 +210,9 @@ namespace DefaultNamespace
                         entityTest = value.Item2.TryGetValue("entityTest", out var entityTestVal)
                             ? (string)entityTestVal
                             : default,
+                        addressTest = value.Item2.TryGetValue("addressTest", out var addressTestVal)
+                            ? (string)addressTestVal
+                            : default,
                     };
                 }
                 catch (InvalidCastException)
@@ -209,6 +225,7 @@ namespace DefaultNamespace
                         bigUintTest = null,
                         enumTest = null,
                         entityTest = null,
+                        addressTest = null,
                     };
                 }
             }

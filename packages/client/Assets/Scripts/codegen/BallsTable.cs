@@ -12,38 +12,38 @@ using UnityEngine;
 
 namespace DefaultNamespace
 {
-    public class InflateTableUpdate : TypedRecordUpdate<Tuple<InflateTable?, InflateTable?>> { }
+    public class BallsTableUpdate : TypedRecordUpdate<Tuple<BallsTable?, BallsTable?>> { }
 
-    public class InflateTable : IMudTable
+    public class BallsTable : IMudTable
     {
-        public readonly static TableId ID = new("", "Inflate");
+        public readonly static TableId ID = new("", "Balls");
 
         public override TableId GetTableId()
         {
             return ID;
         }
 
-        public ulong? value;
+        public long? count;
 
         public override Type TableType()
         {
-            return typeof(InflateTable);
+            return typeof(BallsTable);
         }
 
         public override Type TableUpdateType()
         {
-            return typeof(InflateTableUpdate);
+            return typeof(BallsTableUpdate);
         }
 
         public override bool Equals(object? obj)
         {
-            InflateTable other = (InflateTable)obj;
+            BallsTable other = (BallsTable)obj;
 
             if (other == null)
             {
                 return false;
             }
-            if (value != other.value)
+            if (count != other.count)
             {
                 return false;
             }
@@ -52,7 +52,7 @@ namespace DefaultNamespace
 
         public override void SetValues(params object[] functionParameters)
         {
-            value = (ulong)(int)functionParameters[0];
+            count = (long)(int)functionParameters[0];
         }
 
         public override void RecordToTable(Record record)
@@ -60,19 +60,19 @@ namespace DefaultNamespace
             var table = record.value;
             //bool hasValues = false;
 
-            var valueValue = (ulong)table["value"];
-            value = valueValue;
+            var countValue = (long)table["count"];
+            count = countValue;
         }
 
         public override IMudTable RecordUpdateToTable(RecordUpdate tableUpdate)
         {
-            InflateTableUpdate update = (InflateTableUpdate)tableUpdate;
+            BallsTableUpdate update = (BallsTableUpdate)tableUpdate;
             return update?.TypedValue.Item1;
         }
 
         public override RecordUpdate CreateTypedRecord(RecordUpdate newUpdate)
         {
-            return new InflateTableUpdate
+            return new BallsTableUpdate
             {
                 TableId = newUpdate.TableId,
                 Key = newUpdate.Key,
@@ -81,27 +81,25 @@ namespace DefaultNamespace
             };
         }
 
-        public static Tuple<InflateTable?, InflateTable?> MapUpdates(
-            Tuple<Property?, Property?> value
-        )
+        public static Tuple<BallsTable?, BallsTable?> MapUpdates(Tuple<Property?, Property?> value)
         {
-            InflateTable? current = null;
-            InflateTable? previous = null;
+            BallsTable? current = null;
+            BallsTable? previous = null;
 
             if (value.Item1 != null)
             {
                 try
                 {
-                    current = new InflateTable
+                    current = new BallsTable
                     {
-                        value = value.Item1.TryGetValue("value", out var valueVal)
-                            ? (ulong)valueVal
+                        count = value.Item1.TryGetValue("count", out var countVal)
+                            ? (long)countVal
                             : default,
                     };
                 }
                 catch (InvalidCastException)
                 {
-                    current = new InflateTable { value = null, };
+                    current = new BallsTable { count = null, };
                 }
             }
 
@@ -109,20 +107,20 @@ namespace DefaultNamespace
             {
                 try
                 {
-                    previous = new InflateTable
+                    previous = new BallsTable
                     {
-                        value = value.Item2.TryGetValue("value", out var valueVal)
-                            ? (ulong)valueVal
+                        count = value.Item2.TryGetValue("count", out var countVal)
+                            ? (long)countVal
                             : default,
                     };
                 }
                 catch (InvalidCastException)
                 {
-                    previous = new InflateTable { value = null, };
+                    previous = new BallsTable { count = null, };
                 }
             }
 
-            return new Tuple<InflateTable?, InflateTable?>(current, previous);
+            return new Tuple<BallsTable?, BallsTable?>(current, previous);
         }
     }
 }

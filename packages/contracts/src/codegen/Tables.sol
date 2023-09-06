@@ -5,7 +5,7 @@ pragma solidity >=0.8.0;
 
 import { Counter, CounterTableId } from "./tables/Counter.sol";
 import { Tester, TesterTableId } from "./tables/Tester.sol";
-import { BytesTest, BytesTestTableId } from "./tables/BytesTest.sol";
 import { State, StateTableId } from "./tables/State.sol";
-import { Inflate, InflateTableId } from "./tables/Inflate.sol";
+import { Balls, BallsTableId } from "./tables/Balls.sol";
+import { Position, PositionData, PositionTableId } from "./tables/Position.sol";
 import { AllTypes, AllTypesTableId } from "./tables/AllTypes.sol";

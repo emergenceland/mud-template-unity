@@ -469,6 +469,32 @@ namespace IWorld.Service
 
 
 
+        public Task<string> MoveBallRequestAsync(MoveBallFunction moveBallFunction)
+        {
+             return ContractHandler.SendRequestAsync(moveBallFunction);
+        }
+
+        public Task<TransactionReceipt> MoveBallRequestAndWaitForReceiptAsync(MoveBallFunction moveBallFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(moveBallFunction, cancellationToken);
+        }
+
+        public Task<string> MoveBallRequestAsync(byte[] key)
+        {
+            var moveBallFunction = new MoveBallFunction();
+                moveBallFunction.Key = key;
+            
+             return ContractHandler.SendRequestAsync(moveBallFunction);
+        }
+
+        public Task<TransactionReceipt> MoveBallRequestAndWaitForReceiptAsync(byte[] key, CancellationTokenSource cancellationToken = null)
+        {
+            var moveBallFunction = new MoveBallFunction();
+                moveBallFunction.Key = key;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(moveBallFunction, cancellationToken);
+        }
+
         public Task<string> PopFromFieldRequestAsync(PopFromField1Function popFromField1Function)
         {
              return ContractHandler.SendRequestAsync(popFromField1Function);
@@ -1180,25 +1206,19 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAsync(spawnBallFunction);
         }
 
+        public Task<string> SpawnBallRequestAsync()
+        {
+             return ContractHandler.SendRequestAsync<SpawnBallFunction>();
+        }
+
         public Task<TransactionReceipt> SpawnBallRequestAndWaitForReceiptAsync(SpawnBallFunction spawnBallFunction, CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync(spawnBallFunction, cancellationToken);
         }
 
-        public Task<string> SpawnBallRequestAsync(int ball)
+        public Task<TransactionReceipt> SpawnBallRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
         {
-            var spawnBallFunction = new SpawnBallFunction();
-                spawnBallFunction.Ball = ball;
-            
-             return ContractHandler.SendRequestAsync(spawnBallFunction);
-        }
-
-        public Task<TransactionReceipt> SpawnBallRequestAndWaitForReceiptAsync(int ball, CancellationTokenSource cancellationToken = null)
-        {
-            var spawnBallFunction = new SpawnBallFunction();
-                spawnBallFunction.Ball = ball;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(spawnBallFunction, cancellationToken);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync<SpawnBallFunction>(null, cancellationToken);
         }
 
         public Task<string> StartTestRequestAsync(StartTestFunction startTestFunction)
@@ -1219,6 +1239,26 @@ namespace IWorld.Service
         public Task<TransactionReceipt> StartTestRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync<StartTestFunction>(null, cancellationToken);
+        }
+
+        public Task<string> UpdateAllBallsRequestAsync(UpdateAllBallsFunction updateAllBallsFunction)
+        {
+             return ContractHandler.SendRequestAsync(updateAllBallsFunction);
+        }
+
+        public Task<string> UpdateAllBallsRequestAsync()
+        {
+             return ContractHandler.SendRequestAsync<UpdateAllBallsFunction>();
+        }
+
+        public Task<TransactionReceipt> UpdateAllBallsRequestAndWaitForReceiptAsync(UpdateAllBallsFunction updateAllBallsFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(updateAllBallsFunction, cancellationToken);
+        }
+
+        public Task<TransactionReceipt> UpdateAllBallsRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync<UpdateAllBallsFunction>(null, cancellationToken);
         }
 
         public Task<string> UpdateInFieldRequestAsync(UpdateInFieldFunction updateInFieldFunction)
