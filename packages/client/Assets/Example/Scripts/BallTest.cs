@@ -32,17 +32,19 @@ public class BallTest : MonoBehaviour
     public int ballIndex;
     public TextMesh text;
     public string key, keyBytes32;
-    public UpdateType expectedType;
-    public UpdateType currentType;
 
     
 
     [Header("Position Test")]
     public bool hasUpdatedPosition = false;
-    public bool hasWaited = false;
     public GameObject error;
-    public Vector3 currentPos;
     public Vector3 expectedPos;
+    public Vector3 currentPos;
+    public UpdateType expectedType;
+    public UpdateType currentType;    
+    public bool expectedWaited = false;
+    public bool hasWaited = false;
+
     float moveTime = 0f;
     bool txSending = false;
     bool recievedUpdate = false;
@@ -62,7 +64,6 @@ public class BallTest : MonoBehaviour
     public void UpdatePosition(Vector3 newPosition, bool newHasWaited, UpdateType newUpdateType) {
 
         ballIndex = (int)newPosition.y;
-        hasWaited = newHasWaited;
 
         if(newUpdateType == UpdateType.DeleteRecord) {
             mr.sharedMaterial = deleteRecord;
@@ -75,14 +76,16 @@ public class BallTest : MonoBehaviour
         if(log) Debug.Log("Expected " + Describe(expectedPos, expectedType), this);
 
         transform.position = newPosition;
+        hasWaited = newHasWaited;
         currentType = newUpdateType;
 
         text.text = newUpdateType.ToString();
 
         if(hasUpdatedPosition) {
             // Debug.Assert(newState == transactionState);
-            error.SetActive(expectedPos != newPosition || expectedType != newUpdateType);
+            error.SetActive(expectedPos != newPosition || expectedType != newUpdateType || expectedWaited != hasWaited) ;
             Debug.Assert(expectedPos == newPosition, "--POS MISMATCH--", this);
+            Debug.Assert(expectedWaited == hasWaited, "--WAIT MISMATCH--", this);
             Debug.Assert(expectedType == newUpdateType, "--TYPE MISMATCH--", this);
 
         } else {
@@ -104,12 +107,15 @@ public class BallTest : MonoBehaviour
         if(currentPos.x == 2 && hasWaited == false) {
             expectedPos = currentPos;
             expectedType = UpdateType.SetRecord;
+            expectedWaited = true;
         } else if(currentPos.x == 3) {
             expectedPos = currentType == UpdateType.SetRecord ? transform.position : Vector3.right + Vector3.up * ballIndex;
             expectedType = currentType == UpdateType.SetRecord ? UpdateType.DeleteRecord : UpdateType.SetRecord;
+            expectedWaited = false;
         } else {
             expectedPos = currentPos + Vector3.right;
             expectedType = UpdateType.SetRecord;
+            expectedWaited = false;
         }
 
         recievedUpdate = false; 
