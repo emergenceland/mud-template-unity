@@ -2,9 +2,7 @@
 
 #nullable enable
 using System;
-using mud.Client;
-using mud.Network.schemas;
-using mud.Unity;
+using mud;
 using UniRx;
 using Property = System.Collections.Generic.Dictionary<string, object>;
 using System.Collections.Generic;
@@ -16,16 +14,16 @@ namespace DefaultNamespace
 
     public class PositionTable : IMudTable
     {
-        public readonly static TableId ID = new("", "Position");
+        public readonly static string ID = "Position";
+        public static RxTable PositionRxTable
+        {
+            get { return NetworkManager.Datastore.tableNameIndex[ID]; }
+        }
 
-        public override TableId GetTableId()
+        public override string GetTableId()
         {
             return ID;
         }
-
-        public long? x;
-        public long? y;
-        public bool? hasWaited;
 
         public override Type TableType()
         {
@@ -45,58 +43,15 @@ namespace DefaultNamespace
             {
                 return false;
             }
-            if (x != other.x)
-            {
-                return false;
-            }
-            if (y != other.y)
-            {
-                return false;
-            }
-            if (hasWaited != other.hasWaited)
-            {
-                return false;
-            }
             return true;
         }
 
-        public override void SetValues(params object[] functionParameters)
-        {
-            x = (long)(int)functionParameters[0];
+        public override void SetValues(params object[] functionParameters) { }
 
-            y = (long)(int)functionParameters[1];
-
-            hasWaited = (bool)functionParameters[2];
-        }
-
-        public override void RecordToTable(Record record)
+        public override void RecordToTable(RxRecord record)
         {
             var table = record.value;
             //bool hasValues = false;
-
-            var xValue = (long)table["x"];
-            x = xValue;
-            var yValue = (long)table["y"];
-            y = yValue;
-            var hasWaitedValue = (bool)table["hasWaited"];
-            hasWaited = hasWaitedValue;
-        }
-
-        public override IMudTable RecordUpdateToTable(RecordUpdate tableUpdate)
-        {
-            PositionTableUpdate update = (PositionTableUpdate)tableUpdate;
-            return update?.TypedValue.Item1;
-        }
-
-        public override RecordUpdate CreateTypedRecord(RecordUpdate newUpdate)
-        {
-            return new PositionTableUpdate
-            {
-                TableId = newUpdate.TableId,
-                Key = newUpdate.Key,
-                Value = newUpdate.Value,
-                TypedValue = MapUpdates(newUpdate.Value)
-            };
         }
 
         public static Tuple<PositionTable?, PositionTable?> MapUpdates(
@@ -110,23 +65,11 @@ namespace DefaultNamespace
             {
                 try
                 {
-                    current = new PositionTable
-                    {
-                        x = value.Item1.TryGetValue("x", out var xVal) ? (long)xVal : default,
-                        y = value.Item1.TryGetValue("y", out var yVal) ? (long)yVal : default,
-                        hasWaited = value.Item1.TryGetValue("hasWaited", out var hasWaitedVal)
-                            ? (bool)hasWaitedVal
-                            : default,
-                    };
+                    current = new PositionTable { };
                 }
                 catch (InvalidCastException)
                 {
-                    current = new PositionTable
-                    {
-                        x = null,
-                        y = null,
-                        hasWaited = null,
-                    };
+                    current = new PositionTable { };
                 }
             }
 
@@ -134,23 +77,11 @@ namespace DefaultNamespace
             {
                 try
                 {
-                    previous = new PositionTable
-                    {
-                        x = value.Item2.TryGetValue("x", out var xVal) ? (long)xVal : default,
-                        y = value.Item2.TryGetValue("y", out var yVal) ? (long)yVal : default,
-                        hasWaited = value.Item2.TryGetValue("hasWaited", out var hasWaitedVal)
-                            ? (bool)hasWaitedVal
-                            : default,
-                    };
+                    previous = new PositionTable { };
                 }
                 catch (InvalidCastException)
                 {
-                    previous = new PositionTable
-                    {
-                        x = null,
-                        y = null,
-                        hasWaited = null,
-                    };
+                    previous = new PositionTable { };
                 }
             }
 

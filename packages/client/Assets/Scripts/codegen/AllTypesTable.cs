@@ -2,9 +2,7 @@
 
 #nullable enable
 using System;
-using mud.Client;
-using mud.Network.schemas;
-using mud.Unity;
+using mud;
 using UniRx;
 using Property = System.Collections.Generic.Dictionary<string, object>;
 using System.Collections.Generic;
@@ -16,20 +14,16 @@ namespace DefaultNamespace
 
     public class AllTypesTable : IMudTable
     {
-        public readonly static TableId ID = new("", "AllTypes");
+        public readonly static string ID = "AllTypes";
+        public static RxTable AllTypesRxTable
+        {
+            get { return NetworkManager.Datastore.tableNameIndex[ID]; }
+        }
 
-        public override TableId GetTableId()
+        public override string GetTableId()
         {
             return ID;
         }
-
-        public bool? boolTest;
-        public long? int32Test;
-        public ulong? uint32Test;
-        public System.Numerics.BigInteger? bigUintTest;
-        public byte? enumTest;
-        public string? entityTest;
-        public string? addressTest;
 
         public override Type TableType()
         {
@@ -49,90 +43,15 @@ namespace DefaultNamespace
             {
                 return false;
             }
-            if (boolTest != other.boolTest)
-            {
-                return false;
-            }
-            if (int32Test != other.int32Test)
-            {
-                return false;
-            }
-            if (uint32Test != other.uint32Test)
-            {
-                return false;
-            }
-            if (bigUintTest != other.bigUintTest)
-            {
-                return false;
-            }
-            if (enumTest != other.enumTest)
-            {
-                return false;
-            }
-            if (entityTest != other.entityTest)
-            {
-                return false;
-            }
-            if (addressTest != other.addressTest)
-            {
-                return false;
-            }
             return true;
         }
 
-        public override void SetValues(params object[] functionParameters)
-        {
-            boolTest = (bool)functionParameters[0];
+        public override void SetValues(params object[] functionParameters) { }
 
-            int32Test = (long)(int)functionParameters[1];
-
-            uint32Test = (ulong)(int)functionParameters[2];
-
-            bigUintTest = (System.Numerics.BigInteger)functionParameters[3];
-
-            enumTest = (byte)functionParameters[4];
-
-            entityTest = (string)functionParameters[5];
-
-            addressTest = (string)functionParameters[6];
-        }
-
-        public override void RecordToTable(Record record)
+        public override void RecordToTable(RxRecord record)
         {
             var table = record.value;
             //bool hasValues = false;
-
-            var boolTestValue = (bool)table["boolTest"];
-            boolTest = boolTestValue;
-            var int32TestValue = (long)table["int32Test"];
-            int32Test = int32TestValue;
-            var uint32TestValue = (ulong)table["uint32Test"];
-            uint32Test = uint32TestValue;
-            var bigUintTestValue = (System.Numerics.BigInteger)table["bigUintTest"];
-            bigUintTest = bigUintTestValue;
-            var enumTestValue = (byte)table["enumTest"];
-            enumTest = enumTestValue;
-            var entityTestValue = (string)table["entityTest"];
-            entityTest = entityTestValue;
-            var addressTestValue = (string)table["addressTest"];
-            addressTest = addressTestValue;
-        }
-
-        public override IMudTable RecordUpdateToTable(RecordUpdate tableUpdate)
-        {
-            AllTypesTableUpdate update = (AllTypesTableUpdate)tableUpdate;
-            return update?.TypedValue.Item1;
-        }
-
-        public override RecordUpdate CreateTypedRecord(RecordUpdate newUpdate)
-        {
-            return new AllTypesTableUpdate
-            {
-                TableId = newUpdate.TableId,
-                Key = newUpdate.Key,
-                Value = newUpdate.Value,
-                TypedValue = MapUpdates(newUpdate.Value)
-            };
         }
 
         public static Tuple<AllTypesTable?, AllTypesTable?> MapUpdates(
@@ -146,43 +65,11 @@ namespace DefaultNamespace
             {
                 try
                 {
-                    current = new AllTypesTable
-                    {
-                        boolTest = value.Item1.TryGetValue("boolTest", out var boolTestVal)
-                            ? (bool)boolTestVal
-                            : default,
-                        int32Test = value.Item1.TryGetValue("int32Test", out var int32TestVal)
-                            ? (long)int32TestVal
-                            : default,
-                        uint32Test = value.Item1.TryGetValue("uint32Test", out var uint32TestVal)
-                            ? (ulong)uint32TestVal
-                            : default,
-                        bigUintTest = value.Item1.TryGetValue("bigUintTest", out var bigUintTestVal)
-                            ? (System.Numerics.BigInteger)bigUintTestVal
-                            : default,
-                        enumTest = value.Item1.TryGetValue("enumTest", out var enumTestVal)
-                            ? (byte)enumTestVal
-                            : default,
-                        entityTest = value.Item1.TryGetValue("entityTest", out var entityTestVal)
-                            ? (string)entityTestVal
-                            : default,
-                        addressTest = value.Item1.TryGetValue("addressTest", out var addressTestVal)
-                            ? (string)addressTestVal
-                            : default,
-                    };
+                    current = new AllTypesTable { };
                 }
                 catch (InvalidCastException)
                 {
-                    current = new AllTypesTable
-                    {
-                        boolTest = null,
-                        int32Test = null,
-                        uint32Test = null,
-                        bigUintTest = null,
-                        enumTest = null,
-                        entityTest = null,
-                        addressTest = null,
-                    };
+                    current = new AllTypesTable { };
                 }
             }
 
@@ -190,43 +77,11 @@ namespace DefaultNamespace
             {
                 try
                 {
-                    previous = new AllTypesTable
-                    {
-                        boolTest = value.Item2.TryGetValue("boolTest", out var boolTestVal)
-                            ? (bool)boolTestVal
-                            : default,
-                        int32Test = value.Item2.TryGetValue("int32Test", out var int32TestVal)
-                            ? (long)int32TestVal
-                            : default,
-                        uint32Test = value.Item2.TryGetValue("uint32Test", out var uint32TestVal)
-                            ? (ulong)uint32TestVal
-                            : default,
-                        bigUintTest = value.Item2.TryGetValue("bigUintTest", out var bigUintTestVal)
-                            ? (System.Numerics.BigInteger)bigUintTestVal
-                            : default,
-                        enumTest = value.Item2.TryGetValue("enumTest", out var enumTestVal)
-                            ? (byte)enumTestVal
-                            : default,
-                        entityTest = value.Item2.TryGetValue("entityTest", out var entityTestVal)
-                            ? (string)entityTestVal
-                            : default,
-                        addressTest = value.Item2.TryGetValue("addressTest", out var addressTestVal)
-                            ? (string)addressTestVal
-                            : default,
-                    };
+                    previous = new AllTypesTable { };
                 }
                 catch (InvalidCastException)
                 {
-                    previous = new AllTypesTable
-                    {
-                        boolTest = null,
-                        int32Test = null,
-                        uint32Test = null,
-                        bigUintTest = null,
-                        enumTest = null,
-                        entityTest = null,
-                        addressTest = null,
-                    };
+                    previous = new AllTypesTable { };
                 }
             }
 

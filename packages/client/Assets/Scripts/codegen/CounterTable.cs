@@ -2,9 +2,7 @@
 
 #nullable enable
 using System;
-using mud.Client;
-using mud.Network.schemas;
-using mud.Unity;
+using mud;
 using UniRx;
 using Property = System.Collections.Generic.Dictionary<string, object>;
 using System.Collections.Generic;
@@ -16,14 +14,16 @@ namespace DefaultNamespace
 
     public class CounterTable : IMudTable
     {
-        public readonly static TableId ID = new("", "Counter");
+        public readonly static string ID = "Counter";
+        public static RxTable CounterRxTable
+        {
+            get { return NetworkManager.Datastore.tableNameIndex[ID]; }
+        }
 
-        public override TableId GetTableId()
+        public override string GetTableId()
         {
             return ID;
         }
-
-        public ulong? value;
 
         public override Type TableType()
         {
@@ -43,42 +43,15 @@ namespace DefaultNamespace
             {
                 return false;
             }
-            if (value != other.value)
-            {
-                return false;
-            }
             return true;
         }
 
-        public override void SetValues(params object[] functionParameters)
-        {
-            value = (ulong)(int)functionParameters[0];
-        }
+        public override void SetValues(params object[] functionParameters) { }
 
-        public override void RecordToTable(Record record)
+        public override void RecordToTable(RxRecord record)
         {
             var table = record.value;
             //bool hasValues = false;
-
-            var valueValue = (ulong)table["value"];
-            value = valueValue;
-        }
-
-        public override IMudTable RecordUpdateToTable(RecordUpdate tableUpdate)
-        {
-            CounterTableUpdate update = (CounterTableUpdate)tableUpdate;
-            return update?.TypedValue.Item1;
-        }
-
-        public override RecordUpdate CreateTypedRecord(RecordUpdate newUpdate)
-        {
-            return new CounterTableUpdate
-            {
-                TableId = newUpdate.TableId,
-                Key = newUpdate.Key,
-                Value = newUpdate.Value,
-                TypedValue = MapUpdates(newUpdate.Value)
-            };
         }
 
         public static Tuple<CounterTable?, CounterTable?> MapUpdates(
@@ -92,16 +65,11 @@ namespace DefaultNamespace
             {
                 try
                 {
-                    current = new CounterTable
-                    {
-                        value = value.Item1.TryGetValue("value", out var valueVal)
-                            ? (ulong)valueVal
-                            : default,
-                    };
+                    current = new CounterTable { };
                 }
                 catch (InvalidCastException)
                 {
-                    current = new CounterTable { value = null, };
+                    current = new CounterTable { };
                 }
             }
 
@@ -109,16 +77,11 @@ namespace DefaultNamespace
             {
                 try
                 {
-                    previous = new CounterTable
-                    {
-                        value = value.Item2.TryGetValue("value", out var valueVal)
-                            ? (ulong)valueVal
-                            : default,
-                    };
+                    previous = new CounterTable { };
                 }
                 catch (InvalidCastException)
                 {
-                    previous = new CounterTable { value = null, };
+                    previous = new CounterTable { };
                 }
             }
 

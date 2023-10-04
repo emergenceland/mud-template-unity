@@ -2,9 +2,7 @@
 
 #nullable enable
 using System;
-using mud.Client;
-using mud.Network.schemas;
-using mud.Unity;
+using mud;
 using UniRx;
 using Property = System.Collections.Generic.Dictionary<string, object>;
 using System.Collections.Generic;
@@ -16,14 +14,16 @@ namespace DefaultNamespace
 
     public class BallsTable : IMudTable
     {
-        public readonly static TableId ID = new("", "Balls");
+        public readonly static string ID = "Balls";
+        public static RxTable BallsRxTable
+        {
+            get { return NetworkManager.Datastore.tableNameIndex[ID]; }
+        }
 
-        public override TableId GetTableId()
+        public override string GetTableId()
         {
             return ID;
         }
-
-        public long? count;
 
         public override Type TableType()
         {
@@ -43,42 +43,15 @@ namespace DefaultNamespace
             {
                 return false;
             }
-            if (count != other.count)
-            {
-                return false;
-            }
             return true;
         }
 
-        public override void SetValues(params object[] functionParameters)
-        {
-            count = (long)(int)functionParameters[0];
-        }
+        public override void SetValues(params object[] functionParameters) { }
 
-        public override void RecordToTable(Record record)
+        public override void RecordToTable(RxRecord record)
         {
             var table = record.value;
             //bool hasValues = false;
-
-            var countValue = (long)table["count"];
-            count = countValue;
-        }
-
-        public override IMudTable RecordUpdateToTable(RecordUpdate tableUpdate)
-        {
-            BallsTableUpdate update = (BallsTableUpdate)tableUpdate;
-            return update?.TypedValue.Item1;
-        }
-
-        public override RecordUpdate CreateTypedRecord(RecordUpdate newUpdate)
-        {
-            return new BallsTableUpdate
-            {
-                TableId = newUpdate.TableId,
-                Key = newUpdate.Key,
-                Value = newUpdate.Value,
-                TypedValue = MapUpdates(newUpdate.Value)
-            };
         }
 
         public static Tuple<BallsTable?, BallsTable?> MapUpdates(Tuple<Property?, Property?> value)
@@ -90,16 +63,11 @@ namespace DefaultNamespace
             {
                 try
                 {
-                    current = new BallsTable
-                    {
-                        count = value.Item1.TryGetValue("count", out var countVal)
-                            ? (long)countVal
-                            : default,
-                    };
+                    current = new BallsTable { };
                 }
                 catch (InvalidCastException)
                 {
-                    current = new BallsTable { count = null, };
+                    current = new BallsTable { };
                 }
             }
 
@@ -107,16 +75,11 @@ namespace DefaultNamespace
             {
                 try
                 {
-                    previous = new BallsTable
-                    {
-                        count = value.Item2.TryGetValue("count", out var countVal)
-                            ? (long)countVal
-                            : default,
-                    };
+                    previous = new BallsTable { };
                 }
                 catch (InvalidCastException)
                 {
-                    previous = new BallsTable { count = null, };
+                    previous = new BallsTable { };
                 }
             }
 

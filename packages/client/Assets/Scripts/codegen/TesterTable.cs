@@ -2,9 +2,7 @@
 
 #nullable enable
 using System;
-using mud.Client;
-using mud.Network.schemas;
-using mud.Unity;
+using mud;
 using UniRx;
 using Property = System.Collections.Generic.Dictionary<string, object>;
 using System.Collections.Generic;
@@ -16,14 +14,16 @@ namespace DefaultNamespace
 
     public class TesterTable : IMudTable
     {
-        public readonly static TableId ID = new("", "Tester");
+        public readonly static string ID = "Tester";
+        public static RxTable TesterRxTable
+        {
+            get { return NetworkManager.Datastore.tableNameIndex[ID]; }
+        }
 
-        public override TableId GetTableId()
+        public override string GetTableId()
         {
             return ID;
         }
-
-        public long? value;
 
         public override Type TableType()
         {
@@ -43,42 +43,15 @@ namespace DefaultNamespace
             {
                 return false;
             }
-            if (value != other.value)
-            {
-                return false;
-            }
             return true;
         }
 
-        public override void SetValues(params object[] functionParameters)
-        {
-            value = (long)(int)functionParameters[0];
-        }
+        public override void SetValues(params object[] functionParameters) { }
 
-        public override void RecordToTable(Record record)
+        public override void RecordToTable(RxRecord record)
         {
             var table = record.value;
             //bool hasValues = false;
-
-            var valueValue = (long)table["value"];
-            value = valueValue;
-        }
-
-        public override IMudTable RecordUpdateToTable(RecordUpdate tableUpdate)
-        {
-            TesterTableUpdate update = (TesterTableUpdate)tableUpdate;
-            return update?.TypedValue.Item1;
-        }
-
-        public override RecordUpdate CreateTypedRecord(RecordUpdate newUpdate)
-        {
-            return new TesterTableUpdate
-            {
-                TableId = newUpdate.TableId,
-                Key = newUpdate.Key,
-                Value = newUpdate.Value,
-                TypedValue = MapUpdates(newUpdate.Value)
-            };
         }
 
         public static Tuple<TesterTable?, TesterTable?> MapUpdates(
@@ -92,16 +65,11 @@ namespace DefaultNamespace
             {
                 try
                 {
-                    current = new TesterTable
-                    {
-                        value = value.Item1.TryGetValue("value", out var valueVal)
-                            ? (long)valueVal
-                            : default,
-                    };
+                    current = new TesterTable { };
                 }
                 catch (InvalidCastException)
                 {
-                    current = new TesterTable { value = null, };
+                    current = new TesterTable { };
                 }
             }
 
@@ -109,16 +77,11 @@ namespace DefaultNamespace
             {
                 try
                 {
-                    previous = new TesterTable
-                    {
-                        value = value.Item2.TryGetValue("value", out var valueVal)
-                            ? (long)valueVal
-                            : default,
-                    };
+                    previous = new TesterTable { };
                 }
                 catch (InvalidCastException)
                 {
-                    previous = new TesterTable { value = null, };
+                    previous = new TesterTable { };
                 }
             }
 

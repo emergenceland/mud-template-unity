@@ -48,6 +48,58 @@ namespace IWorld.Service
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);
         }
 
+        public Task<string> BatchCallRequestAsync(BatchCallFunction batchCallFunction)
+        {
+             return ContractHandler.SendRequestAsync(batchCallFunction);
+        }
+
+        public Task<TransactionReceipt> BatchCallRequestAndWaitForReceiptAsync(BatchCallFunction batchCallFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(batchCallFunction, cancellationToken);
+        }
+
+        public Task<string> BatchCallRequestAsync(List<SystemCallData> systemCalls)
+        {
+            var batchCallFunction = new BatchCallFunction();
+                batchCallFunction.SystemCalls = systemCalls;
+            
+             return ContractHandler.SendRequestAsync(batchCallFunction);
+        }
+
+        public Task<TransactionReceipt> BatchCallRequestAndWaitForReceiptAsync(List<SystemCallData> systemCalls, CancellationTokenSource cancellationToken = null)
+        {
+            var batchCallFunction = new BatchCallFunction();
+                batchCallFunction.SystemCalls = systemCalls;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(batchCallFunction, cancellationToken);
+        }
+
+        public Task<string> BatchCallFromRequestAsync(BatchCallFromFunction batchCallFromFunction)
+        {
+             return ContractHandler.SendRequestAsync(batchCallFromFunction);
+        }
+
+        public Task<TransactionReceipt> BatchCallFromRequestAndWaitForReceiptAsync(BatchCallFromFunction batchCallFromFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(batchCallFromFunction, cancellationToken);
+        }
+
+        public Task<string> BatchCallFromRequestAsync(List<SystemCallFromData> systemCalls)
+        {
+            var batchCallFromFunction = new BatchCallFromFunction();
+                batchCallFromFunction.SystemCalls = systemCalls;
+            
+             return ContractHandler.SendRequestAsync(batchCallFromFunction);
+        }
+
+        public Task<TransactionReceipt> BatchCallFromRequestAndWaitForReceiptAsync(List<SystemCallFromData> systemCalls, CancellationTokenSource cancellationToken = null)
+        {
+            var batchCallFromFunction = new BatchCallFromFunction();
+                batchCallFromFunction.SystemCalls = systemCalls;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(batchCallFromFunction, cancellationToken);
+        }
+
         public Task<string> CallRequestAsync(CallFunction callFunction)
         {
              return ContractHandler.SendRequestAsync(callFunction);
@@ -58,24 +110,63 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(callFunction, cancellationToken);
         }
 
-        public Task<string> CallRequestAsync(byte[] @namespace, byte[] name, byte[] funcSelectorAndArgs)
+        public Task<string> CallRequestAsync(byte[] systemId, byte[] callData)
         {
             var callFunction = new CallFunction();
-                callFunction.Namespace = @namespace;
-                callFunction.Name = name;
-                callFunction.FuncSelectorAndArgs = funcSelectorAndArgs;
+                callFunction.SystemId = systemId;
+                callFunction.CallData = callData;
             
              return ContractHandler.SendRequestAsync(callFunction);
         }
 
-        public Task<TransactionReceipt> CallRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, byte[] funcSelectorAndArgs, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> CallRequestAndWaitForReceiptAsync(byte[] systemId, byte[] callData, CancellationTokenSource cancellationToken = null)
         {
             var callFunction = new CallFunction();
-                callFunction.Namespace = @namespace;
-                callFunction.Name = name;
-                callFunction.FuncSelectorAndArgs = funcSelectorAndArgs;
+                callFunction.SystemId = systemId;
+                callFunction.CallData = callData;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(callFunction, cancellationToken);
+        }
+
+        public Task<string> CallFromRequestAsync(CallFromFunction callFromFunction)
+        {
+             return ContractHandler.SendRequestAsync(callFromFunction);
+        }
+
+        public Task<TransactionReceipt> CallFromRequestAndWaitForReceiptAsync(CallFromFunction callFromFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(callFromFunction, cancellationToken);
+        }
+
+        public Task<string> CallFromRequestAsync(string delegator, byte[] systemId, byte[] callData)
+        {
+            var callFromFunction = new CallFromFunction();
+                callFromFunction.Delegator = delegator;
+                callFromFunction.SystemId = systemId;
+                callFromFunction.CallData = callData;
+            
+             return ContractHandler.SendRequestAsync(callFromFunction);
+        }
+
+        public Task<TransactionReceipt> CallFromRequestAndWaitForReceiptAsync(string delegator, byte[] systemId, byte[] callData, CancellationTokenSource cancellationToken = null)
+        {
+            var callFromFunction = new CallFromFunction();
+                callFromFunction.Delegator = delegator;
+                callFromFunction.SystemId = systemId;
+                callFromFunction.CallData = callData;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(callFromFunction, cancellationToken);
+        }
+
+        public Task<string> CreatorQueryAsync(CreatorFunction creatorFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<CreatorFunction, string>(creatorFunction, blockParameter);
+        }
+
+        
+        public Task<string> CreatorQueryAsync(BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<CreatorFunction, string>(null, blockParameter);
         }
 
         public Task<string> DeleteRecordRequestAsync(DeleteRecordFunction deleteRecordFunction)
@@ -88,52 +179,22 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(deleteRecordFunction, cancellationToken);
         }
 
-        public Task<string> DeleteRecordRequestAsync(byte[] table, List<byte[]> key)
+        public Task<string> DeleteRecordRequestAsync(byte[] tableId, List<byte[]> keyTuple)
         {
             var deleteRecordFunction = new DeleteRecordFunction();
-                deleteRecordFunction.Table = table;
-                deleteRecordFunction.Key = key;
+                deleteRecordFunction.TableId = tableId;
+                deleteRecordFunction.KeyTuple = keyTuple;
             
              return ContractHandler.SendRequestAsync(deleteRecordFunction);
         }
 
-        public Task<TransactionReceipt> DeleteRecordRequestAndWaitForReceiptAsync(byte[] table, List<byte[]> key, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> DeleteRecordRequestAndWaitForReceiptAsync(byte[] tableId, List<byte[]> keyTuple, CancellationTokenSource cancellationToken = null)
         {
             var deleteRecordFunction = new DeleteRecordFunction();
-                deleteRecordFunction.Table = table;
-                deleteRecordFunction.Key = key;
+                deleteRecordFunction.TableId = tableId;
+                deleteRecordFunction.KeyTuple = keyTuple;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(deleteRecordFunction, cancellationToken);
-        }
-
-        public Task<string> DeleteRecordRequestAsync(DeleteRecord1Function deleteRecord1Function)
-        {
-             return ContractHandler.SendRequestAsync(deleteRecord1Function);
-        }
-
-        public Task<TransactionReceipt> DeleteRecordRequestAndWaitForReceiptAsync(DeleteRecord1Function deleteRecord1Function, CancellationTokenSource cancellationToken = null)
-        {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(deleteRecord1Function, cancellationToken);
-        }
-
-        public Task<string> DeleteRecordRequestAsync(byte[] @namespace, byte[] name, List<byte[]> key)
-        {
-            var deleteRecord1Function = new DeleteRecord1Function();
-                deleteRecord1Function.Namespace = @namespace;
-                deleteRecord1Function.Name = name;
-                deleteRecord1Function.Key = key;
-            
-             return ContractHandler.SendRequestAsync(deleteRecord1Function);
-        }
-
-        public Task<TransactionReceipt> DeleteRecordRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, List<byte[]> key, CancellationTokenSource cancellationToken = null)
-        {
-            var deleteRecord1Function = new DeleteRecord1Function();
-                deleteRecord1Function.Namespace = @namespace;
-                deleteRecord1Function.Name = name;
-                deleteRecord1Function.Key = key;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(deleteRecord1Function, cancellationToken);
         }
 
         public Task<string> DeleteSetRequestAsync(DeleteSetFunction deleteSetFunction)
@@ -188,66 +249,71 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(deleteSimpleFunction, cancellationToken);
         }
 
-        public Task<string> EmitEphemeralRecordRequestAsync(EmitEphemeralRecord1Function emitEphemeralRecord1Function)
+        public Task<byte[]> GetDynamicFieldQueryAsync(GetDynamicFieldFunction getDynamicFieldFunction, BlockParameter blockParameter = null)
         {
-             return ContractHandler.SendRequestAsync(emitEphemeralRecord1Function);
+            return ContractHandler.QueryAsync<GetDynamicFieldFunction, byte[]>(getDynamicFieldFunction, blockParameter);
         }
 
-        public Task<TransactionReceipt> EmitEphemeralRecordRequestAndWaitForReceiptAsync(EmitEphemeralRecord1Function emitEphemeralRecord1Function, CancellationTokenSource cancellationToken = null)
+        
+        public Task<byte[]> GetDynamicFieldQueryAsync(byte[] tableId, List<byte[]> keyTuple, byte dynamicFieldIndex, BlockParameter blockParameter = null)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(emitEphemeralRecord1Function, cancellationToken);
-        }
-
-        public Task<string> EmitEphemeralRecordRequestAsync(byte[] @namespace, byte[] name, List<byte[]> key, byte[] data)
-        {
-            var emitEphemeralRecord1Function = new EmitEphemeralRecord1Function();
-                emitEphemeralRecord1Function.Namespace = @namespace;
-                emitEphemeralRecord1Function.Name = name;
-                emitEphemeralRecord1Function.Key = key;
-                emitEphemeralRecord1Function.Data = data;
+            var getDynamicFieldFunction = new GetDynamicFieldFunction();
+                getDynamicFieldFunction.TableId = tableId;
+                getDynamicFieldFunction.KeyTuple = keyTuple;
+                getDynamicFieldFunction.DynamicFieldIndex = dynamicFieldIndex;
             
-             return ContractHandler.SendRequestAsync(emitEphemeralRecord1Function);
+            return ContractHandler.QueryAsync<GetDynamicFieldFunction, byte[]>(getDynamicFieldFunction, blockParameter);
         }
 
-        public Task<TransactionReceipt> EmitEphemeralRecordRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, List<byte[]> key, byte[] data, CancellationTokenSource cancellationToken = null)
+        public Task<BigInteger> GetDynamicFieldLengthQueryAsync(GetDynamicFieldLengthFunction getDynamicFieldLengthFunction, BlockParameter blockParameter = null)
         {
-            var emitEphemeralRecord1Function = new EmitEphemeralRecord1Function();
-                emitEphemeralRecord1Function.Namespace = @namespace;
-                emitEphemeralRecord1Function.Name = name;
-                emitEphemeralRecord1Function.Key = key;
-                emitEphemeralRecord1Function.Data = data;
+            return ContractHandler.QueryAsync<GetDynamicFieldLengthFunction, BigInteger>(getDynamicFieldLengthFunction, blockParameter);
+        }
+
+        
+        public Task<BigInteger> GetDynamicFieldLengthQueryAsync(byte[] tableId, List<byte[]> keyTuple, byte dynamicFieldIndex, BlockParameter blockParameter = null)
+        {
+            var getDynamicFieldLengthFunction = new GetDynamicFieldLengthFunction();
+                getDynamicFieldLengthFunction.TableId = tableId;
+                getDynamicFieldLengthFunction.KeyTuple = keyTuple;
+                getDynamicFieldLengthFunction.DynamicFieldIndex = dynamicFieldIndex;
             
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(emitEphemeralRecord1Function, cancellationToken);
+            return ContractHandler.QueryAsync<GetDynamicFieldLengthFunction, BigInteger>(getDynamicFieldLengthFunction, blockParameter);
         }
 
-        public Task<string> EmitEphemeralRecordRequestAsync(EmitEphemeralRecordFunction emitEphemeralRecordFunction)
+        public Task<byte[]> GetDynamicFieldSliceQueryAsync(GetDynamicFieldSliceFunction getDynamicFieldSliceFunction, BlockParameter blockParameter = null)
         {
-             return ContractHandler.SendRequestAsync(emitEphemeralRecordFunction);
+            return ContractHandler.QueryAsync<GetDynamicFieldSliceFunction, byte[]>(getDynamicFieldSliceFunction, blockParameter);
         }
 
-        public Task<TransactionReceipt> EmitEphemeralRecordRequestAndWaitForReceiptAsync(EmitEphemeralRecordFunction emitEphemeralRecordFunction, CancellationTokenSource cancellationToken = null)
+        
+        public Task<byte[]> GetDynamicFieldSliceQueryAsync(byte[] tableId, List<byte[]> keyTuple, byte dynamicFieldIndex, BigInteger start, BigInteger end, BlockParameter blockParameter = null)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(emitEphemeralRecordFunction, cancellationToken);
-        }
-
-        public Task<string> EmitEphemeralRecordRequestAsync(byte[] table, List<byte[]> key, byte[] data)
-        {
-            var emitEphemeralRecordFunction = new EmitEphemeralRecordFunction();
-                emitEphemeralRecordFunction.Table = table;
-                emitEphemeralRecordFunction.Key = key;
-                emitEphemeralRecordFunction.Data = data;
+            var getDynamicFieldSliceFunction = new GetDynamicFieldSliceFunction();
+                getDynamicFieldSliceFunction.TableId = tableId;
+                getDynamicFieldSliceFunction.KeyTuple = keyTuple;
+                getDynamicFieldSliceFunction.DynamicFieldIndex = dynamicFieldIndex;
+                getDynamicFieldSliceFunction.Start = start;
+                getDynamicFieldSliceFunction.End = end;
             
-             return ContractHandler.SendRequestAsync(emitEphemeralRecordFunction);
+            return ContractHandler.QueryAsync<GetDynamicFieldSliceFunction, byte[]>(getDynamicFieldSliceFunction, blockParameter);
         }
 
-        public Task<TransactionReceipt> EmitEphemeralRecordRequestAndWaitForReceiptAsync(byte[] table, List<byte[]> key, byte[] data, CancellationTokenSource cancellationToken = null)
+        public Task<byte[]> GetFieldQueryAsync(GetField1Function getField1Function, BlockParameter blockParameter = null)
         {
-            var emitEphemeralRecordFunction = new EmitEphemeralRecordFunction();
-                emitEphemeralRecordFunction.Table = table;
-                emitEphemeralRecordFunction.Key = key;
-                emitEphemeralRecordFunction.Data = data;
+            return ContractHandler.QueryAsync<GetField1Function, byte[]>(getField1Function, blockParameter);
+        }
+
+        
+        public Task<byte[]> GetFieldQueryAsync(byte[] tableId, List<byte[]> keyTuple, byte fieldIndex, byte[] fieldLayout, BlockParameter blockParameter = null)
+        {
+            var getField1Function = new GetField1Function();
+                getField1Function.TableId = tableId;
+                getField1Function.KeyTuple = keyTuple;
+                getField1Function.FieldIndex = fieldIndex;
+                getField1Function.FieldLayout = fieldLayout;
             
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(emitEphemeralRecordFunction, cancellationToken);
+            return ContractHandler.QueryAsync<GetField1Function, byte[]>(getField1Function, blockParameter);
         }
 
         public Task<byte[]> GetFieldQueryAsync(GetFieldFunction getFieldFunction, BlockParameter blockParameter = null)
@@ -256,14 +322,45 @@ namespace IWorld.Service
         }
 
         
-        public Task<byte[]> GetFieldQueryAsync(byte[] table, List<byte[]> key, byte schemaIndex, BlockParameter blockParameter = null)
+        public Task<byte[]> GetFieldQueryAsync(byte[] tableId, List<byte[]> keyTuple, byte fieldIndex, BlockParameter blockParameter = null)
         {
             var getFieldFunction = new GetFieldFunction();
-                getFieldFunction.Table = table;
-                getFieldFunction.Key = key;
-                getFieldFunction.SchemaIndex = schemaIndex;
+                getFieldFunction.TableId = tableId;
+                getFieldFunction.KeyTuple = keyTuple;
+                getFieldFunction.FieldIndex = fieldIndex;
             
             return ContractHandler.QueryAsync<GetFieldFunction, byte[]>(getFieldFunction, blockParameter);
+        }
+
+        public Task<byte[]> GetFieldLayoutQueryAsync(GetFieldLayoutFunction getFieldLayoutFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<GetFieldLayoutFunction, byte[]>(getFieldLayoutFunction, blockParameter);
+        }
+
+        
+        public Task<byte[]> GetFieldLayoutQueryAsync(byte[] tableId, BlockParameter blockParameter = null)
+        {
+            var getFieldLayoutFunction = new GetFieldLayoutFunction();
+                getFieldLayoutFunction.TableId = tableId;
+            
+            return ContractHandler.QueryAsync<GetFieldLayoutFunction, byte[]>(getFieldLayoutFunction, blockParameter);
+        }
+
+        public Task<BigInteger> GetFieldLengthQueryAsync(GetFieldLength1Function getFieldLength1Function, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<GetFieldLength1Function, BigInteger>(getFieldLength1Function, blockParameter);
+        }
+
+        
+        public Task<BigInteger> GetFieldLengthQueryAsync(byte[] tableId, List<byte[]> keyTuple, byte fieldIndex, byte[] fieldLayout, BlockParameter blockParameter = null)
+        {
+            var getFieldLength1Function = new GetFieldLength1Function();
+                getFieldLength1Function.TableId = tableId;
+                getFieldLength1Function.KeyTuple = keyTuple;
+                getFieldLength1Function.FieldIndex = fieldIndex;
+                getFieldLength1Function.FieldLayout = fieldLayout;
+            
+            return ContractHandler.QueryAsync<GetFieldLength1Function, BigInteger>(getFieldLength1Function, blockParameter);
         }
 
         public Task<BigInteger> GetFieldLengthQueryAsync(GetFieldLengthFunction getFieldLengthFunction, BlockParameter blockParameter = null)
@@ -272,34 +369,14 @@ namespace IWorld.Service
         }
 
         
-        public Task<BigInteger> GetFieldLengthQueryAsync(byte[] table, List<byte[]> key, byte schemaIndex, byte[] schema, BlockParameter blockParameter = null)
+        public Task<BigInteger> GetFieldLengthQueryAsync(byte[] tableId, List<byte[]> keyTuple, byte fieldIndex, BlockParameter blockParameter = null)
         {
             var getFieldLengthFunction = new GetFieldLengthFunction();
-                getFieldLengthFunction.Table = table;
-                getFieldLengthFunction.Key = key;
-                getFieldLengthFunction.SchemaIndex = schemaIndex;
-                getFieldLengthFunction.Schema = schema;
+                getFieldLengthFunction.TableId = tableId;
+                getFieldLengthFunction.KeyTuple = keyTuple;
+                getFieldLengthFunction.FieldIndex = fieldIndex;
             
             return ContractHandler.QueryAsync<GetFieldLengthFunction, BigInteger>(getFieldLengthFunction, blockParameter);
-        }
-
-        public Task<byte[]> GetFieldSliceQueryAsync(GetFieldSliceFunction getFieldSliceFunction, BlockParameter blockParameter = null)
-        {
-            return ContractHandler.QueryAsync<GetFieldSliceFunction, byte[]>(getFieldSliceFunction, blockParameter);
-        }
-
-        
-        public Task<byte[]> GetFieldSliceQueryAsync(byte[] table, List<byte[]> key, byte schemaIndex, byte[] schema, BigInteger start, BigInteger end, BlockParameter blockParameter = null)
-        {
-            var getFieldSliceFunction = new GetFieldSliceFunction();
-                getFieldSliceFunction.Table = table;
-                getFieldSliceFunction.Key = key;
-                getFieldSliceFunction.SchemaIndex = schemaIndex;
-                getFieldSliceFunction.Schema = schema;
-                getFieldSliceFunction.Start = start;
-                getFieldSliceFunction.End = end;
-            
-            return ContractHandler.QueryAsync<GetFieldSliceFunction, byte[]>(getFieldSliceFunction, blockParameter);
         }
 
         public Task<byte[]> GetKeySchemaQueryAsync(GetKeySchemaFunction getKeySchemaFunction, BlockParameter blockParameter = null)
@@ -308,57 +385,72 @@ namespace IWorld.Service
         }
 
         
-        public Task<byte[]> GetKeySchemaQueryAsync(byte[] table, BlockParameter blockParameter = null)
+        public Task<byte[]> GetKeySchemaQueryAsync(byte[] tableId, BlockParameter blockParameter = null)
         {
             var getKeySchemaFunction = new GetKeySchemaFunction();
-                getKeySchemaFunction.Table = table;
+                getKeySchemaFunction.TableId = tableId;
             
             return ContractHandler.QueryAsync<GetKeySchemaFunction, byte[]>(getKeySchemaFunction, blockParameter);
         }
 
-        public Task<byte[]> GetRecordQueryAsync(GetRecord1Function getRecord1Function, BlockParameter blockParameter = null)
+        public Task<GetRecord1OutputDTO> GetRecordQueryAsync(GetRecord1Function getRecord1Function, BlockParameter blockParameter = null)
         {
-            return ContractHandler.QueryAsync<GetRecord1Function, byte[]>(getRecord1Function, blockParameter);
+            return ContractHandler.QueryDeserializingToObjectAsync<GetRecord1Function, GetRecord1OutputDTO>(getRecord1Function, blockParameter);
         }
 
-        
-        public Task<byte[]> GetRecordQueryAsync(byte[] table, List<byte[]> key, byte[] schema, BlockParameter blockParameter = null)
+        public Task<GetRecord1OutputDTO> GetRecordQueryAsync(byte[] tableId, List<byte[]> keyTuple, byte[] fieldLayout, BlockParameter blockParameter = null)
         {
             var getRecord1Function = new GetRecord1Function();
-                getRecord1Function.Table = table;
-                getRecord1Function.Key = key;
-                getRecord1Function.Schema = schema;
+                getRecord1Function.TableId = tableId;
+                getRecord1Function.KeyTuple = keyTuple;
+                getRecord1Function.FieldLayout = fieldLayout;
             
-            return ContractHandler.QueryAsync<GetRecord1Function, byte[]>(getRecord1Function, blockParameter);
+            return ContractHandler.QueryDeserializingToObjectAsync<GetRecord1Function, GetRecord1OutputDTO>(getRecord1Function, blockParameter);
         }
 
-        public Task<byte[]> GetRecordQueryAsync(GetRecordFunction getRecordFunction, BlockParameter blockParameter = null)
+        public Task<GetRecordOutputDTO> GetRecordQueryAsync(GetRecordFunction getRecordFunction, BlockParameter blockParameter = null)
         {
-            return ContractHandler.QueryAsync<GetRecordFunction, byte[]>(getRecordFunction, blockParameter);
+            return ContractHandler.QueryDeserializingToObjectAsync<GetRecordFunction, GetRecordOutputDTO>(getRecordFunction, blockParameter);
         }
 
-        
-        public Task<byte[]> GetRecordQueryAsync(byte[] table, List<byte[]> key, BlockParameter blockParameter = null)
+        public Task<GetRecordOutputDTO> GetRecordQueryAsync(byte[] tableId, List<byte[]> keyTuple, BlockParameter blockParameter = null)
         {
             var getRecordFunction = new GetRecordFunction();
-                getRecordFunction.Table = table;
-                getRecordFunction.Key = key;
+                getRecordFunction.TableId = tableId;
+                getRecordFunction.KeyTuple = keyTuple;
             
-            return ContractHandler.QueryAsync<GetRecordFunction, byte[]>(getRecordFunction, blockParameter);
+            return ContractHandler.QueryDeserializingToObjectAsync<GetRecordFunction, GetRecordOutputDTO>(getRecordFunction, blockParameter);
         }
 
-        public Task<byte[]> GetSchemaQueryAsync(GetSchemaFunction getSchemaFunction, BlockParameter blockParameter = null)
+        public Task<byte[]> GetStaticFieldQueryAsync(GetStaticFieldFunction getStaticFieldFunction, BlockParameter blockParameter = null)
         {
-            return ContractHandler.QueryAsync<GetSchemaFunction, byte[]>(getSchemaFunction, blockParameter);
+            return ContractHandler.QueryAsync<GetStaticFieldFunction, byte[]>(getStaticFieldFunction, blockParameter);
         }
 
         
-        public Task<byte[]> GetSchemaQueryAsync(byte[] table, BlockParameter blockParameter = null)
+        public Task<byte[]> GetStaticFieldQueryAsync(byte[] tableId, List<byte[]> keyTuple, byte fieldIndex, byte[] fieldLayout, BlockParameter blockParameter = null)
         {
-            var getSchemaFunction = new GetSchemaFunction();
-                getSchemaFunction.Table = table;
+            var getStaticFieldFunction = new GetStaticFieldFunction();
+                getStaticFieldFunction.TableId = tableId;
+                getStaticFieldFunction.KeyTuple = keyTuple;
+                getStaticFieldFunction.FieldIndex = fieldIndex;
+                getStaticFieldFunction.FieldLayout = fieldLayout;
             
-            return ContractHandler.QueryAsync<GetSchemaFunction, byte[]>(getSchemaFunction, blockParameter);
+            return ContractHandler.QueryAsync<GetStaticFieldFunction, byte[]>(getStaticFieldFunction, blockParameter);
+        }
+
+        public Task<byte[]> GetValueSchemaQueryAsync(GetValueSchemaFunction getValueSchemaFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<GetValueSchemaFunction, byte[]>(getValueSchemaFunction, blockParameter);
+        }
+
+        
+        public Task<byte[]> GetValueSchemaQueryAsync(byte[] tableId, BlockParameter blockParameter = null)
+        {
+            var getValueSchemaFunction = new GetValueSchemaFunction();
+                getValueSchemaFunction.TableId = tableId;
+            
+            return ContractHandler.QueryAsync<GetValueSchemaFunction, byte[]>(getValueSchemaFunction, blockParameter);
         }
 
         public Task<string> GrantAccessRequestAsync(GrantAccessFunction grantAccessFunction)
@@ -371,21 +463,19 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(grantAccessFunction, cancellationToken);
         }
 
-        public Task<string> GrantAccessRequestAsync(byte[] @namespace, byte[] name, string grantee)
+        public Task<string> GrantAccessRequestAsync(byte[] resourceId, string grantee)
         {
             var grantAccessFunction = new GrantAccessFunction();
-                grantAccessFunction.Namespace = @namespace;
-                grantAccessFunction.Name = name;
+                grantAccessFunction.ResourceId = resourceId;
                 grantAccessFunction.Grantee = grantee;
             
              return ContractHandler.SendRequestAsync(grantAccessFunction);
         }
 
-        public Task<TransactionReceipt> GrantAccessRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, string grantee, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> GrantAccessRequestAndWaitForReceiptAsync(byte[] resourceId, string grantee, CancellationTokenSource cancellationToken = null)
         {
             var grantAccessFunction = new GrantAccessFunction();
-                grantAccessFunction.Namespace = @namespace;
-                grantAccessFunction.Name = name;
+                grantAccessFunction.ResourceId = resourceId;
                 grantAccessFunction.Grantee = grantee;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(grantAccessFunction, cancellationToken);
@@ -409,6 +499,32 @@ namespace IWorld.Service
         public Task<TransactionReceipt> IncrementRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync<IncrementFunction>(null, cancellationToken);
+        }
+
+        public Task<string> InitializeRequestAsync(InitializeFunction initializeFunction)
+        {
+             return ContractHandler.SendRequestAsync(initializeFunction);
+        }
+
+        public Task<TransactionReceipt> InitializeRequestAndWaitForReceiptAsync(InitializeFunction initializeFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(initializeFunction, cancellationToken);
+        }
+
+        public Task<string> InitializeRequestAsync(string coreModule)
+        {
+            var initializeFunction = new InitializeFunction();
+                initializeFunction.CoreModule = coreModule;
+            
+             return ContractHandler.SendRequestAsync(initializeFunction);
+        }
+
+        public Task<TransactionReceipt> InitializeRequestAndWaitForReceiptAsync(string coreModule, CancellationTokenSource cancellationToken = null)
+        {
+            var initializeFunction = new InitializeFunction();
+                initializeFunction.CoreModule = coreModule;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(initializeFunction, cancellationToken);
         }
 
         public Task<string> InstallModuleRequestAsync(InstallModuleFunction installModuleFunction)
@@ -467,8 +583,6 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(installRootModuleFunction, cancellationToken);
         }
 
-
-
         public Task<string> MoveBallRequestAsync(MoveBallFunction moveBallFunction)
         {
              return ContractHandler.SendRequestAsync(moveBallFunction);
@@ -495,136 +609,98 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(moveBallFunction, cancellationToken);
         }
 
-        public Task<string> PopFromFieldRequestAsync(PopFromField1Function popFromField1Function)
+        public Task<string> PopFromDynamicFieldRequestAsync(PopFromDynamicFieldFunction popFromDynamicFieldFunction)
         {
-             return ContractHandler.SendRequestAsync(popFromField1Function);
+             return ContractHandler.SendRequestAsync(popFromDynamicFieldFunction);
         }
 
-        public Task<TransactionReceipt> PopFromFieldRequestAndWaitForReceiptAsync(PopFromField1Function popFromField1Function, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> PopFromDynamicFieldRequestAndWaitForReceiptAsync(PopFromDynamicFieldFunction popFromDynamicFieldFunction, CancellationTokenSource cancellationToken = null)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(popFromField1Function, cancellationToken);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(popFromDynamicFieldFunction, cancellationToken);
         }
 
-        public Task<string> PopFromFieldRequestAsync(byte[] @namespace, byte[] name, List<byte[]> key, byte schemaIndex, BigInteger byteLengthToPop)
+        public Task<string> PopFromDynamicFieldRequestAsync(byte[] tableId, List<byte[]> keyTuple, byte dynamicFieldIndex, BigInteger byteLengthToPop)
         {
-            var popFromField1Function = new PopFromField1Function();
-                popFromField1Function.Namespace = @namespace;
-                popFromField1Function.Name = name;
-                popFromField1Function.Key = key;
-                popFromField1Function.SchemaIndex = schemaIndex;
-                popFromField1Function.ByteLengthToPop = byteLengthToPop;
+            var popFromDynamicFieldFunction = new PopFromDynamicFieldFunction();
+                popFromDynamicFieldFunction.TableId = tableId;
+                popFromDynamicFieldFunction.KeyTuple = keyTuple;
+                popFromDynamicFieldFunction.DynamicFieldIndex = dynamicFieldIndex;
+                popFromDynamicFieldFunction.ByteLengthToPop = byteLengthToPop;
             
-             return ContractHandler.SendRequestAsync(popFromField1Function);
+             return ContractHandler.SendRequestAsync(popFromDynamicFieldFunction);
         }
 
-        public Task<TransactionReceipt> PopFromFieldRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, List<byte[]> key, byte schemaIndex, BigInteger byteLengthToPop, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> PopFromDynamicFieldRequestAndWaitForReceiptAsync(byte[] tableId, List<byte[]> keyTuple, byte dynamicFieldIndex, BigInteger byteLengthToPop, CancellationTokenSource cancellationToken = null)
         {
-            var popFromField1Function = new PopFromField1Function();
-                popFromField1Function.Namespace = @namespace;
-                popFromField1Function.Name = name;
-                popFromField1Function.Key = key;
-                popFromField1Function.SchemaIndex = schemaIndex;
-                popFromField1Function.ByteLengthToPop = byteLengthToPop;
+            var popFromDynamicFieldFunction = new PopFromDynamicFieldFunction();
+                popFromDynamicFieldFunction.TableId = tableId;
+                popFromDynamicFieldFunction.KeyTuple = keyTuple;
+                popFromDynamicFieldFunction.DynamicFieldIndex = dynamicFieldIndex;
+                popFromDynamicFieldFunction.ByteLengthToPop = byteLengthToPop;
             
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(popFromField1Function, cancellationToken);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(popFromDynamicFieldFunction, cancellationToken);
         }
 
-        public Task<string> PopFromFieldRequestAsync(PopFromFieldFunction popFromFieldFunction)
+        public Task<string> PushToDynamicFieldRequestAsync(PushToDynamicFieldFunction pushToDynamicFieldFunction)
         {
-             return ContractHandler.SendRequestAsync(popFromFieldFunction);
+             return ContractHandler.SendRequestAsync(pushToDynamicFieldFunction);
         }
 
-        public Task<TransactionReceipt> PopFromFieldRequestAndWaitForReceiptAsync(PopFromFieldFunction popFromFieldFunction, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> PushToDynamicFieldRequestAndWaitForReceiptAsync(PushToDynamicFieldFunction pushToDynamicFieldFunction, CancellationTokenSource cancellationToken = null)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(popFromFieldFunction, cancellationToken);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(pushToDynamicFieldFunction, cancellationToken);
         }
 
-        public Task<string> PopFromFieldRequestAsync(byte[] table, List<byte[]> key, byte schemaIndex, BigInteger byteLengthToPop)
+        public Task<string> PushToDynamicFieldRequestAsync(byte[] tableId, List<byte[]> keyTuple, byte dynamicFieldIndex, byte[] dataToPush)
         {
-            var popFromFieldFunction = new PopFromFieldFunction();
-                popFromFieldFunction.Table = table;
-                popFromFieldFunction.Key = key;
-                popFromFieldFunction.SchemaIndex = schemaIndex;
-                popFromFieldFunction.ByteLengthToPop = byteLengthToPop;
+            var pushToDynamicFieldFunction = new PushToDynamicFieldFunction();
+                pushToDynamicFieldFunction.TableId = tableId;
+                pushToDynamicFieldFunction.KeyTuple = keyTuple;
+                pushToDynamicFieldFunction.DynamicFieldIndex = dynamicFieldIndex;
+                pushToDynamicFieldFunction.DataToPush = dataToPush;
             
-             return ContractHandler.SendRequestAsync(popFromFieldFunction);
+             return ContractHandler.SendRequestAsync(pushToDynamicFieldFunction);
         }
 
-        public Task<TransactionReceipt> PopFromFieldRequestAndWaitForReceiptAsync(byte[] table, List<byte[]> key, byte schemaIndex, BigInteger byteLengthToPop, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> PushToDynamicFieldRequestAndWaitForReceiptAsync(byte[] tableId, List<byte[]> keyTuple, byte dynamicFieldIndex, byte[] dataToPush, CancellationTokenSource cancellationToken = null)
         {
-            var popFromFieldFunction = new PopFromFieldFunction();
-                popFromFieldFunction.Table = table;
-                popFromFieldFunction.Key = key;
-                popFromFieldFunction.SchemaIndex = schemaIndex;
-                popFromFieldFunction.ByteLengthToPop = byteLengthToPop;
+            var pushToDynamicFieldFunction = new PushToDynamicFieldFunction();
+                pushToDynamicFieldFunction.TableId = tableId;
+                pushToDynamicFieldFunction.KeyTuple = keyTuple;
+                pushToDynamicFieldFunction.DynamicFieldIndex = dynamicFieldIndex;
+                pushToDynamicFieldFunction.DataToPush = dataToPush;
             
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(popFromFieldFunction, cancellationToken);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(pushToDynamicFieldFunction, cancellationToken);
         }
 
-        public Task<string> PushToFieldRequestAsync(PushToFieldFunction pushToFieldFunction)
+        public Task<string> RegisterDelegationRequestAsync(RegisterDelegationFunction registerDelegationFunction)
         {
-             return ContractHandler.SendRequestAsync(pushToFieldFunction);
+             return ContractHandler.SendRequestAsync(registerDelegationFunction);
         }
 
-        public Task<TransactionReceipt> PushToFieldRequestAndWaitForReceiptAsync(PushToFieldFunction pushToFieldFunction, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> RegisterDelegationRequestAndWaitForReceiptAsync(RegisterDelegationFunction registerDelegationFunction, CancellationTokenSource cancellationToken = null)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(pushToFieldFunction, cancellationToken);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(registerDelegationFunction, cancellationToken);
         }
 
-        public Task<string> PushToFieldRequestAsync(byte[] table, List<byte[]> key, byte schemaIndex, byte[] dataToPush)
+        public Task<string> RegisterDelegationRequestAsync(string delegatee, byte[] delegationControlId, byte[] initCallData)
         {
-            var pushToFieldFunction = new PushToFieldFunction();
-                pushToFieldFunction.Table = table;
-                pushToFieldFunction.Key = key;
-                pushToFieldFunction.SchemaIndex = schemaIndex;
-                pushToFieldFunction.DataToPush = dataToPush;
+            var registerDelegationFunction = new RegisterDelegationFunction();
+                registerDelegationFunction.Delegatee = delegatee;
+                registerDelegationFunction.DelegationControlId = delegationControlId;
+                registerDelegationFunction.InitCallData = initCallData;
             
-             return ContractHandler.SendRequestAsync(pushToFieldFunction);
+             return ContractHandler.SendRequestAsync(registerDelegationFunction);
         }
 
-        public Task<TransactionReceipt> PushToFieldRequestAndWaitForReceiptAsync(byte[] table, List<byte[]> key, byte schemaIndex, byte[] dataToPush, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> RegisterDelegationRequestAndWaitForReceiptAsync(string delegatee, byte[] delegationControlId, byte[] initCallData, CancellationTokenSource cancellationToken = null)
         {
-            var pushToFieldFunction = new PushToFieldFunction();
-                pushToFieldFunction.Table = table;
-                pushToFieldFunction.Key = key;
-                pushToFieldFunction.SchemaIndex = schemaIndex;
-                pushToFieldFunction.DataToPush = dataToPush;
+            var registerDelegationFunction = new RegisterDelegationFunction();
+                registerDelegationFunction.Delegatee = delegatee;
+                registerDelegationFunction.DelegationControlId = delegationControlId;
+                registerDelegationFunction.InitCallData = initCallData;
             
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(pushToFieldFunction, cancellationToken);
-        }
-
-        public Task<string> PushToFieldRequestAsync(PushToField1Function pushToField1Function)
-        {
-             return ContractHandler.SendRequestAsync(pushToField1Function);
-        }
-
-        public Task<TransactionReceipt> PushToFieldRequestAndWaitForReceiptAsync(PushToField1Function pushToField1Function, CancellationTokenSource cancellationToken = null)
-        {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(pushToField1Function, cancellationToken);
-        }
-
-        public Task<string> PushToFieldRequestAsync(byte[] @namespace, byte[] name, List<byte[]> key, byte schemaIndex, byte[] dataToPush)
-        {
-            var pushToField1Function = new PushToField1Function();
-                pushToField1Function.Namespace = @namespace;
-                pushToField1Function.Name = name;
-                pushToField1Function.Key = key;
-                pushToField1Function.SchemaIndex = schemaIndex;
-                pushToField1Function.DataToPush = dataToPush;
-            
-             return ContractHandler.SendRequestAsync(pushToField1Function);
-        }
-
-        public Task<TransactionReceipt> PushToFieldRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, List<byte[]> key, byte schemaIndex, byte[] dataToPush, CancellationTokenSource cancellationToken = null)
-        {
-            var pushToField1Function = new PushToField1Function();
-                pushToField1Function.Namespace = @namespace;
-                pushToField1Function.Name = name;
-                pushToField1Function.Key = key;
-                pushToField1Function.SchemaIndex = schemaIndex;
-                pushToField1Function.DataToPush = dataToPush;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(pushToField1Function, cancellationToken);
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(registerDelegationFunction, cancellationToken);
         }
 
         public Task<string> RegisterFunctionSelectorRequestAsync(RegisterFunctionSelectorFunction registerFunctionSelectorFunction)
@@ -637,56 +713,22 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(registerFunctionSelectorFunction, cancellationToken);
         }
 
-        public Task<string> RegisterFunctionSelectorRequestAsync(byte[] @namespace, byte[] name, string systemFunctionName, string systemFunctionArguments)
+        public Task<string> RegisterFunctionSelectorRequestAsync(byte[] systemId, string systemFunctionSignature)
         {
             var registerFunctionSelectorFunction = new RegisterFunctionSelectorFunction();
-                registerFunctionSelectorFunction.Namespace = @namespace;
-                registerFunctionSelectorFunction.Name = name;
-                registerFunctionSelectorFunction.SystemFunctionName = systemFunctionName;
-                registerFunctionSelectorFunction.SystemFunctionArguments = systemFunctionArguments;
+                registerFunctionSelectorFunction.SystemId = systemId;
+                registerFunctionSelectorFunction.SystemFunctionSignature = systemFunctionSignature;
             
              return ContractHandler.SendRequestAsync(registerFunctionSelectorFunction);
         }
 
-        public Task<TransactionReceipt> RegisterFunctionSelectorRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, string systemFunctionName, string systemFunctionArguments, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> RegisterFunctionSelectorRequestAndWaitForReceiptAsync(byte[] systemId, string systemFunctionSignature, CancellationTokenSource cancellationToken = null)
         {
             var registerFunctionSelectorFunction = new RegisterFunctionSelectorFunction();
-                registerFunctionSelectorFunction.Namespace = @namespace;
-                registerFunctionSelectorFunction.Name = name;
-                registerFunctionSelectorFunction.SystemFunctionName = systemFunctionName;
-                registerFunctionSelectorFunction.SystemFunctionArguments = systemFunctionArguments;
+                registerFunctionSelectorFunction.SystemId = systemId;
+                registerFunctionSelectorFunction.SystemFunctionSignature = systemFunctionSignature;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(registerFunctionSelectorFunction, cancellationToken);
-        }
-
-        public Task<string> RegisterHookRequestAsync(RegisterHookFunction registerHookFunction)
-        {
-             return ContractHandler.SendRequestAsync(registerHookFunction);
-        }
-
-        public Task<TransactionReceipt> RegisterHookRequestAndWaitForReceiptAsync(RegisterHookFunction registerHookFunction, CancellationTokenSource cancellationToken = null)
-        {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(registerHookFunction, cancellationToken);
-        }
-
-        public Task<string> RegisterHookRequestAsync(byte[] @namespace, byte[] name, string hook)
-        {
-            var registerHookFunction = new RegisterHookFunction();
-                registerHookFunction.Namespace = @namespace;
-                registerHookFunction.Name = name;
-                registerHookFunction.Hook = hook;
-            
-             return ContractHandler.SendRequestAsync(registerHookFunction);
-        }
-
-        public Task<TransactionReceipt> RegisterHookRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, string hook, CancellationTokenSource cancellationToken = null)
-        {
-            var registerHookFunction = new RegisterHookFunction();
-                registerHookFunction.Namespace = @namespace;
-                registerHookFunction.Name = name;
-                registerHookFunction.Hook = hook;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(registerHookFunction, cancellationToken);
         }
 
         public Task<string> RegisterNamespaceRequestAsync(RegisterNamespaceFunction registerNamespaceFunction)
@@ -699,20 +741,50 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(registerNamespaceFunction, cancellationToken);
         }
 
-        public Task<string> RegisterNamespaceRequestAsync(byte[] @namespace)
+        public Task<string> RegisterNamespaceRequestAsync(byte[] namespaceId)
         {
             var registerNamespaceFunction = new RegisterNamespaceFunction();
-                registerNamespaceFunction.Namespace = @namespace;
+                registerNamespaceFunction.NamespaceId = namespaceId;
             
              return ContractHandler.SendRequestAsync(registerNamespaceFunction);
         }
 
-        public Task<TransactionReceipt> RegisterNamespaceRequestAndWaitForReceiptAsync(byte[] @namespace, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> RegisterNamespaceRequestAndWaitForReceiptAsync(byte[] namespaceId, CancellationTokenSource cancellationToken = null)
         {
             var registerNamespaceFunction = new RegisterNamespaceFunction();
-                registerNamespaceFunction.Namespace = @namespace;
+                registerNamespaceFunction.NamespaceId = namespaceId;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(registerNamespaceFunction, cancellationToken);
+        }
+
+        public Task<string> RegisterNamespaceDelegationRequestAsync(RegisterNamespaceDelegationFunction registerNamespaceDelegationFunction)
+        {
+             return ContractHandler.SendRequestAsync(registerNamespaceDelegationFunction);
+        }
+
+        public Task<TransactionReceipt> RegisterNamespaceDelegationRequestAndWaitForReceiptAsync(RegisterNamespaceDelegationFunction registerNamespaceDelegationFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(registerNamespaceDelegationFunction, cancellationToken);
+        }
+
+        public Task<string> RegisterNamespaceDelegationRequestAsync(byte[] namespaceId, byte[] delegationControlId, byte[] initCallData)
+        {
+            var registerNamespaceDelegationFunction = new RegisterNamespaceDelegationFunction();
+                registerNamespaceDelegationFunction.NamespaceId = namespaceId;
+                registerNamespaceDelegationFunction.DelegationControlId = delegationControlId;
+                registerNamespaceDelegationFunction.InitCallData = initCallData;
+            
+             return ContractHandler.SendRequestAsync(registerNamespaceDelegationFunction);
+        }
+
+        public Task<TransactionReceipt> RegisterNamespaceDelegationRequestAndWaitForReceiptAsync(byte[] namespaceId, byte[] delegationControlId, byte[] initCallData, CancellationTokenSource cancellationToken = null)
+        {
+            var registerNamespaceDelegationFunction = new RegisterNamespaceDelegationFunction();
+                registerNamespaceDelegationFunction.NamespaceId = namespaceId;
+                registerNamespaceDelegationFunction.DelegationControlId = delegationControlId;
+                registerNamespaceDelegationFunction.InitCallData = initCallData;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(registerNamespaceDelegationFunction, cancellationToken);
         }
 
         public Task<string> RegisterRootFunctionSelectorRequestAsync(RegisterRootFunctionSelectorFunction registerRootFunctionSelectorFunction)
@@ -725,56 +797,24 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(registerRootFunctionSelectorFunction, cancellationToken);
         }
 
-        public Task<string> RegisterRootFunctionSelectorRequestAsync(byte[] @namespace, byte[] name, byte[] worldFunctionSelector, byte[] systemFunctionSelector)
+        public Task<string> RegisterRootFunctionSelectorRequestAsync(byte[] systemId, string worldFunctionSignature, byte[] systemFunctionSelector)
         {
             var registerRootFunctionSelectorFunction = new RegisterRootFunctionSelectorFunction();
-                registerRootFunctionSelectorFunction.Namespace = @namespace;
-                registerRootFunctionSelectorFunction.Name = name;
-                registerRootFunctionSelectorFunction.WorldFunctionSelector = worldFunctionSelector;
+                registerRootFunctionSelectorFunction.SystemId = systemId;
+                registerRootFunctionSelectorFunction.WorldFunctionSignature = worldFunctionSignature;
                 registerRootFunctionSelectorFunction.SystemFunctionSelector = systemFunctionSelector;
             
              return ContractHandler.SendRequestAsync(registerRootFunctionSelectorFunction);
         }
 
-        public Task<TransactionReceipt> RegisterRootFunctionSelectorRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, byte[] worldFunctionSelector, byte[] systemFunctionSelector, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> RegisterRootFunctionSelectorRequestAndWaitForReceiptAsync(byte[] systemId, string worldFunctionSignature, byte[] systemFunctionSelector, CancellationTokenSource cancellationToken = null)
         {
             var registerRootFunctionSelectorFunction = new RegisterRootFunctionSelectorFunction();
-                registerRootFunctionSelectorFunction.Namespace = @namespace;
-                registerRootFunctionSelectorFunction.Name = name;
-                registerRootFunctionSelectorFunction.WorldFunctionSelector = worldFunctionSelector;
+                registerRootFunctionSelectorFunction.SystemId = systemId;
+                registerRootFunctionSelectorFunction.WorldFunctionSignature = worldFunctionSignature;
                 registerRootFunctionSelectorFunction.SystemFunctionSelector = systemFunctionSelector;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(registerRootFunctionSelectorFunction, cancellationToken);
-        }
-
-        public Task<string> RegisterSchemaRequestAsync(RegisterSchemaFunction registerSchemaFunction)
-        {
-             return ContractHandler.SendRequestAsync(registerSchemaFunction);
-        }
-
-        public Task<TransactionReceipt> RegisterSchemaRequestAndWaitForReceiptAsync(RegisterSchemaFunction registerSchemaFunction, CancellationTokenSource cancellationToken = null)
-        {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(registerSchemaFunction, cancellationToken);
-        }
-
-        public Task<string> RegisterSchemaRequestAsync(byte[] table, byte[] schema, byte[] keySchema)
-        {
-            var registerSchemaFunction = new RegisterSchemaFunction();
-                registerSchemaFunction.Table = table;
-                registerSchemaFunction.Schema = schema;
-                registerSchemaFunction.KeySchema = keySchema;
-            
-             return ContractHandler.SendRequestAsync(registerSchemaFunction);
-        }
-
-        public Task<TransactionReceipt> RegisterSchemaRequestAndWaitForReceiptAsync(byte[] table, byte[] schema, byte[] keySchema, CancellationTokenSource cancellationToken = null)
-        {
-            var registerSchemaFunction = new RegisterSchemaFunction();
-                registerSchemaFunction.Table = table;
-                registerSchemaFunction.Schema = schema;
-                registerSchemaFunction.KeySchema = keySchema;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(registerSchemaFunction, cancellationToken);
         }
 
         public Task<string> RegisterStoreHookRequestAsync(RegisterStoreHookFunction registerStoreHookFunction)
@@ -787,20 +827,22 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(registerStoreHookFunction, cancellationToken);
         }
 
-        public Task<string> RegisterStoreHookRequestAsync(byte[] table, string hook)
+        public Task<string> RegisterStoreHookRequestAsync(byte[] tableId, string hookAddress, byte enabledHooksBitmap)
         {
             var registerStoreHookFunction = new RegisterStoreHookFunction();
-                registerStoreHookFunction.Table = table;
-                registerStoreHookFunction.Hook = hook;
+                registerStoreHookFunction.TableId = tableId;
+                registerStoreHookFunction.HookAddress = hookAddress;
+                registerStoreHookFunction.EnabledHooksBitmap = enabledHooksBitmap;
             
              return ContractHandler.SendRequestAsync(registerStoreHookFunction);
         }
 
-        public Task<TransactionReceipt> RegisterStoreHookRequestAndWaitForReceiptAsync(byte[] table, string hook, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> RegisterStoreHookRequestAndWaitForReceiptAsync(byte[] tableId, string hookAddress, byte enabledHooksBitmap, CancellationTokenSource cancellationToken = null)
         {
             var registerStoreHookFunction = new RegisterStoreHookFunction();
-                registerStoreHookFunction.Table = table;
-                registerStoreHookFunction.Hook = hook;
+                registerStoreHookFunction.TableId = tableId;
+                registerStoreHookFunction.HookAddress = hookAddress;
+                registerStoreHookFunction.EnabledHooksBitmap = enabledHooksBitmap;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(registerStoreHookFunction, cancellationToken);
         }
@@ -815,22 +857,20 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(registerSystemFunction, cancellationToken);
         }
 
-        public Task<string> RegisterSystemRequestAsync(byte[] @namespace, byte[] name, string system, bool publicAccess)
+        public Task<string> RegisterSystemRequestAsync(byte[] systemId, string system, bool publicAccess)
         {
             var registerSystemFunction = new RegisterSystemFunction();
-                registerSystemFunction.Namespace = @namespace;
-                registerSystemFunction.Name = name;
+                registerSystemFunction.SystemId = systemId;
                 registerSystemFunction.System = system;
                 registerSystemFunction.PublicAccess = publicAccess;
             
              return ContractHandler.SendRequestAsync(registerSystemFunction);
         }
 
-        public Task<TransactionReceipt> RegisterSystemRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, string system, bool publicAccess, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> RegisterSystemRequestAndWaitForReceiptAsync(byte[] systemId, string system, bool publicAccess, CancellationTokenSource cancellationToken = null)
         {
             var registerSystemFunction = new RegisterSystemFunction();
-                registerSystemFunction.Namespace = @namespace;
-                registerSystemFunction.Name = name;
+                registerSystemFunction.SystemId = systemId;
                 registerSystemFunction.System = system;
                 registerSystemFunction.PublicAccess = publicAccess;
             
@@ -847,22 +887,22 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(registerSystemHookFunction, cancellationToken);
         }
 
-        public Task<string> RegisterSystemHookRequestAsync(byte[] @namespace, byte[] name, string hook)
+        public Task<string> RegisterSystemHookRequestAsync(byte[] systemId, string hookAddress, byte enabledHooksBitmap)
         {
             var registerSystemHookFunction = new RegisterSystemHookFunction();
-                registerSystemHookFunction.Namespace = @namespace;
-                registerSystemHookFunction.Name = name;
-                registerSystemHookFunction.Hook = hook;
+                registerSystemHookFunction.SystemId = systemId;
+                registerSystemHookFunction.HookAddress = hookAddress;
+                registerSystemHookFunction.EnabledHooksBitmap = enabledHooksBitmap;
             
              return ContractHandler.SendRequestAsync(registerSystemHookFunction);
         }
 
-        public Task<TransactionReceipt> RegisterSystemHookRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, string hook, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> RegisterSystemHookRequestAndWaitForReceiptAsync(byte[] systemId, string hookAddress, byte enabledHooksBitmap, CancellationTokenSource cancellationToken = null)
         {
             var registerSystemHookFunction = new RegisterSystemHookFunction();
-                registerSystemHookFunction.Namespace = @namespace;
-                registerSystemHookFunction.Name = name;
-                registerSystemHookFunction.Hook = hook;
+                registerSystemHookFunction.SystemId = systemId;
+                registerSystemHookFunction.HookAddress = hookAddress;
+                registerSystemHookFunction.EnabledHooksBitmap = enabledHooksBitmap;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(registerSystemHookFunction, cancellationToken);
         }
@@ -877,56 +917,30 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(registerTableFunction, cancellationToken);
         }
 
-        public Task<string> RegisterTableRequestAsync(byte[] @namespace, byte[] name, byte[] valueSchema, byte[] keySchema)
+        public Task<string> RegisterTableRequestAsync(byte[] tableId, byte[] fieldLayout, byte[] keySchema, byte[] valueSchema, List<string> keyNames, List<string> fieldNames)
         {
             var registerTableFunction = new RegisterTableFunction();
-                registerTableFunction.Namespace = @namespace;
-                registerTableFunction.Name = name;
-                registerTableFunction.ValueSchema = valueSchema;
+                registerTableFunction.TableId = tableId;
+                registerTableFunction.FieldLayout = fieldLayout;
                 registerTableFunction.KeySchema = keySchema;
+                registerTableFunction.ValueSchema = valueSchema;
+                registerTableFunction.KeyNames = keyNames;
+                registerTableFunction.FieldNames = fieldNames;
             
              return ContractHandler.SendRequestAsync(registerTableFunction);
         }
 
-        public Task<TransactionReceipt> RegisterTableRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, byte[] valueSchema, byte[] keySchema, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> RegisterTableRequestAndWaitForReceiptAsync(byte[] tableId, byte[] fieldLayout, byte[] keySchema, byte[] valueSchema, List<string> keyNames, List<string> fieldNames, CancellationTokenSource cancellationToken = null)
         {
             var registerTableFunction = new RegisterTableFunction();
-                registerTableFunction.Namespace = @namespace;
-                registerTableFunction.Name = name;
-                registerTableFunction.ValueSchema = valueSchema;
+                registerTableFunction.TableId = tableId;
+                registerTableFunction.FieldLayout = fieldLayout;
                 registerTableFunction.KeySchema = keySchema;
+                registerTableFunction.ValueSchema = valueSchema;
+                registerTableFunction.KeyNames = keyNames;
+                registerTableFunction.FieldNames = fieldNames;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(registerTableFunction, cancellationToken);
-        }
-
-        public Task<string> RegisterTableHookRequestAsync(RegisterTableHookFunction registerTableHookFunction)
-        {
-             return ContractHandler.SendRequestAsync(registerTableHookFunction);
-        }
-
-        public Task<TransactionReceipt> RegisterTableHookRequestAndWaitForReceiptAsync(RegisterTableHookFunction registerTableHookFunction, CancellationTokenSource cancellationToken = null)
-        {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(registerTableHookFunction, cancellationToken);
-        }
-
-        public Task<string> RegisterTableHookRequestAsync(byte[] @namespace, byte[] name, string hook)
-        {
-            var registerTableHookFunction = new RegisterTableHookFunction();
-                registerTableHookFunction.Namespace = @namespace;
-                registerTableHookFunction.Name = name;
-                registerTableHookFunction.Hook = hook;
-            
-             return ContractHandler.SendRequestAsync(registerTableHookFunction);
-        }
-
-        public Task<TransactionReceipt> RegisterTableHookRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, string hook, CancellationTokenSource cancellationToken = null)
-        {
-            var registerTableHookFunction = new RegisterTableHookFunction();
-                registerTableHookFunction.Namespace = @namespace;
-                registerTableHookFunction.Name = name;
-                registerTableHookFunction.Hook = hook;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(registerTableHookFunction, cancellationToken);
         }
 
         public Task<string> RevokeAccessRequestAsync(RevokeAccessFunction revokeAccessFunction)
@@ -939,21 +953,19 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(revokeAccessFunction, cancellationToken);
         }
 
-        public Task<string> RevokeAccessRequestAsync(byte[] @namespace, byte[] name, string grantee)
+        public Task<string> RevokeAccessRequestAsync(byte[] resourceId, string grantee)
         {
             var revokeAccessFunction = new RevokeAccessFunction();
-                revokeAccessFunction.Namespace = @namespace;
-                revokeAccessFunction.Name = name;
+                revokeAccessFunction.ResourceId = resourceId;
                 revokeAccessFunction.Grantee = grantee;
             
              return ContractHandler.SendRequestAsync(revokeAccessFunction);
         }
 
-        public Task<TransactionReceipt> RevokeAccessRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, string grantee, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> RevokeAccessRequestAndWaitForReceiptAsync(byte[] resourceId, string grantee, CancellationTokenSource cancellationToken = null)
         {
             var revokeAccessFunction = new RevokeAccessFunction();
-                revokeAccessFunction.Namespace = @namespace;
-                revokeAccessFunction.Name = name;
+                revokeAccessFunction.ResourceId = resourceId;
                 revokeAccessFunction.Grantee = grantee;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(revokeAccessFunction, cancellationToken);
@@ -985,6 +997,38 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setDeleteFunction, cancellationToken);
         }
 
+        public Task<string> SetDynamicFieldRequestAsync(SetDynamicFieldFunction setDynamicFieldFunction)
+        {
+             return ContractHandler.SendRequestAsync(setDynamicFieldFunction);
+        }
+
+        public Task<TransactionReceipt> SetDynamicFieldRequestAndWaitForReceiptAsync(SetDynamicFieldFunction setDynamicFieldFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(setDynamicFieldFunction, cancellationToken);
+        }
+
+        public Task<string> SetDynamicFieldRequestAsync(byte[] tableId, List<byte[]> keyTuple, byte dynamicFieldIndex, byte[] data)
+        {
+            var setDynamicFieldFunction = new SetDynamicFieldFunction();
+                setDynamicFieldFunction.TableId = tableId;
+                setDynamicFieldFunction.KeyTuple = keyTuple;
+                setDynamicFieldFunction.DynamicFieldIndex = dynamicFieldIndex;
+                setDynamicFieldFunction.Data = data;
+            
+             return ContractHandler.SendRequestAsync(setDynamicFieldFunction);
+        }
+
+        public Task<TransactionReceipt> SetDynamicFieldRequestAndWaitForReceiptAsync(byte[] tableId, List<byte[]> keyTuple, byte dynamicFieldIndex, byte[] data, CancellationTokenSource cancellationToken = null)
+        {
+            var setDynamicFieldFunction = new SetDynamicFieldFunction();
+                setDynamicFieldFunction.TableId = tableId;
+                setDynamicFieldFunction.KeyTuple = keyTuple;
+                setDynamicFieldFunction.DynamicFieldIndex = dynamicFieldIndex;
+                setDynamicFieldFunction.Data = data;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(setDynamicFieldFunction, cancellationToken);
+        }
+
         public Task<string> SetFieldRequestAsync(SetFieldFunction setFieldFunction)
         {
              return ContractHandler.SendRequestAsync(setFieldFunction);
@@ -995,23 +1039,23 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setFieldFunction, cancellationToken);
         }
 
-        public Task<string> SetFieldRequestAsync(byte[] table, List<byte[]> key, byte schemaIndex, byte[] data)
+        public Task<string> SetFieldRequestAsync(byte[] tableId, List<byte[]> keyTuple, byte fieldIndex, byte[] data)
         {
             var setFieldFunction = new SetFieldFunction();
-                setFieldFunction.Table = table;
-                setFieldFunction.Key = key;
-                setFieldFunction.SchemaIndex = schemaIndex;
+                setFieldFunction.TableId = tableId;
+                setFieldFunction.KeyTuple = keyTuple;
+                setFieldFunction.FieldIndex = fieldIndex;
                 setFieldFunction.Data = data;
             
              return ContractHandler.SendRequestAsync(setFieldFunction);
         }
 
-        public Task<TransactionReceipt> SetFieldRequestAndWaitForReceiptAsync(byte[] table, List<byte[]> key, byte schemaIndex, byte[] data, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> SetFieldRequestAndWaitForReceiptAsync(byte[] tableId, List<byte[]> keyTuple, byte fieldIndex, byte[] data, CancellationTokenSource cancellationToken = null)
         {
             var setFieldFunction = new SetFieldFunction();
-                setFieldFunction.Table = table;
-                setFieldFunction.Key = key;
-                setFieldFunction.SchemaIndex = schemaIndex;
+                setFieldFunction.TableId = tableId;
+                setFieldFunction.KeyTuple = keyTuple;
+                setFieldFunction.FieldIndex = fieldIndex;
                 setFieldFunction.Data = data;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setFieldFunction, cancellationToken);
@@ -1027,122 +1071,28 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setField1Function, cancellationToken);
         }
 
-        public Task<string> SetFieldRequestAsync(byte[] @namespace, byte[] name, List<byte[]> key, byte schemaIndex, byte[] data)
+        public Task<string> SetFieldRequestAsync(byte[] tableId, List<byte[]> keyTuple, byte fieldIndex, byte[] data, byte[] fieldLayout)
         {
             var setField1Function = new SetField1Function();
-                setField1Function.Namespace = @namespace;
-                setField1Function.Name = name;
-                setField1Function.Key = key;
-                setField1Function.SchemaIndex = schemaIndex;
+                setField1Function.TableId = tableId;
+                setField1Function.KeyTuple = keyTuple;
+                setField1Function.FieldIndex = fieldIndex;
                 setField1Function.Data = data;
+                setField1Function.FieldLayout = fieldLayout;
             
              return ContractHandler.SendRequestAsync(setField1Function);
         }
 
-        public Task<TransactionReceipt> SetFieldRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, List<byte[]> key, byte schemaIndex, byte[] data, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> SetFieldRequestAndWaitForReceiptAsync(byte[] tableId, List<byte[]> keyTuple, byte fieldIndex, byte[] data, byte[] fieldLayout, CancellationTokenSource cancellationToken = null)
         {
             var setField1Function = new SetField1Function();
-                setField1Function.Namespace = @namespace;
-                setField1Function.Name = name;
-                setField1Function.Key = key;
-                setField1Function.SchemaIndex = schemaIndex;
+                setField1Function.TableId = tableId;
+                setField1Function.KeyTuple = keyTuple;
+                setField1Function.FieldIndex = fieldIndex;
                 setField1Function.Data = data;
+                setField1Function.FieldLayout = fieldLayout;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setField1Function, cancellationToken);
-        }
-
-        public Task<string> SetMetadataRequestAsync(SetMetadata1Function setMetadata1Function)
-        {
-             return ContractHandler.SendRequestAsync(setMetadata1Function);
-        }
-
-        public Task<TransactionReceipt> SetMetadataRequestAndWaitForReceiptAsync(SetMetadata1Function setMetadata1Function, CancellationTokenSource cancellationToken = null)
-        {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(setMetadata1Function, cancellationToken);
-        }
-
-        public Task<string> SetMetadataRequestAsync(byte[] @namespace, byte[] name, string tableName, List<string> fieldNames)
-        {
-            var setMetadata1Function = new SetMetadata1Function();
-                setMetadata1Function.Namespace = @namespace;
-                setMetadata1Function.Name = name;
-                setMetadata1Function.TableName = tableName;
-                setMetadata1Function.FieldNames = fieldNames;
-            
-             return ContractHandler.SendRequestAsync(setMetadata1Function);
-        }
-
-        public Task<TransactionReceipt> SetMetadataRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, string tableName, List<string> fieldNames, CancellationTokenSource cancellationToken = null)
-        {
-            var setMetadata1Function = new SetMetadata1Function();
-                setMetadata1Function.Namespace = @namespace;
-                setMetadata1Function.Name = name;
-                setMetadata1Function.TableName = tableName;
-                setMetadata1Function.FieldNames = fieldNames;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(setMetadata1Function, cancellationToken);
-        }
-
-        public Task<string> SetMetadataRequestAsync(SetMetadataFunction setMetadataFunction)
-        {
-             return ContractHandler.SendRequestAsync(setMetadataFunction);
-        }
-
-        public Task<TransactionReceipt> SetMetadataRequestAndWaitForReceiptAsync(SetMetadataFunction setMetadataFunction, CancellationTokenSource cancellationToken = null)
-        {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(setMetadataFunction, cancellationToken);
-        }
-
-        public Task<string> SetMetadataRequestAsync(byte[] table, string tableName, List<string> fieldNames)
-        {
-            var setMetadataFunction = new SetMetadataFunction();
-                setMetadataFunction.Table = table;
-                setMetadataFunction.TableName = tableName;
-                setMetadataFunction.FieldNames = fieldNames;
-            
-             return ContractHandler.SendRequestAsync(setMetadataFunction);
-        }
-
-        public Task<TransactionReceipt> SetMetadataRequestAndWaitForReceiptAsync(byte[] table, string tableName, List<string> fieldNames, CancellationTokenSource cancellationToken = null)
-        {
-            var setMetadataFunction = new SetMetadataFunction();
-                setMetadataFunction.Table = table;
-                setMetadataFunction.TableName = tableName;
-                setMetadataFunction.FieldNames = fieldNames;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(setMetadataFunction, cancellationToken);
-        }
-
-        public Task<string> SetRecordRequestAsync(SetRecord1Function setRecord1Function)
-        {
-             return ContractHandler.SendRequestAsync(setRecord1Function);
-        }
-
-        public Task<TransactionReceipt> SetRecordRequestAndWaitForReceiptAsync(SetRecord1Function setRecord1Function, CancellationTokenSource cancellationToken = null)
-        {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(setRecord1Function, cancellationToken);
-        }
-
-        public Task<string> SetRecordRequestAsync(byte[] @namespace, byte[] name, List<byte[]> key, byte[] data)
-        {
-            var setRecord1Function = new SetRecord1Function();
-                setRecord1Function.Namespace = @namespace;
-                setRecord1Function.Name = name;
-                setRecord1Function.Key = key;
-                setRecord1Function.Data = data;
-            
-             return ContractHandler.SendRequestAsync(setRecord1Function);
-        }
-
-        public Task<TransactionReceipt> SetRecordRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, List<byte[]> key, byte[] data, CancellationTokenSource cancellationToken = null)
-        {
-            var setRecord1Function = new SetRecord1Function();
-                setRecord1Function.Namespace = @namespace;
-                setRecord1Function.Name = name;
-                setRecord1Function.Key = key;
-                setRecord1Function.Data = data;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(setRecord1Function, cancellationToken);
         }
 
         public Task<string> SetRecordRequestAsync(SetRecordFunction setRecordFunction)
@@ -1155,22 +1105,26 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setRecordFunction, cancellationToken);
         }
 
-        public Task<string> SetRecordRequestAsync(byte[] table, List<byte[]> key, byte[] data)
+        public Task<string> SetRecordRequestAsync(byte[] tableId, List<byte[]> keyTuple, byte[] staticData, byte[] encodedLengths, byte[] dynamicData)
         {
             var setRecordFunction = new SetRecordFunction();
-                setRecordFunction.Table = table;
-                setRecordFunction.Key = key;
-                setRecordFunction.Data = data;
+                setRecordFunction.TableId = tableId;
+                setRecordFunction.KeyTuple = keyTuple;
+                setRecordFunction.StaticData = staticData;
+                setRecordFunction.EncodedLengths = encodedLengths;
+                setRecordFunction.DynamicData = dynamicData;
             
              return ContractHandler.SendRequestAsync(setRecordFunction);
         }
 
-        public Task<TransactionReceipt> SetRecordRequestAndWaitForReceiptAsync(byte[] table, List<byte[]> key, byte[] data, CancellationTokenSource cancellationToken = null)
+        public Task<TransactionReceipt> SetRecordRequestAndWaitForReceiptAsync(byte[] tableId, List<byte[]> keyTuple, byte[] staticData, byte[] encodedLengths, byte[] dynamicData, CancellationTokenSource cancellationToken = null)
         {
             var setRecordFunction = new SetRecordFunction();
-                setRecordFunction.Table = table;
-                setRecordFunction.Key = key;
-                setRecordFunction.Data = data;
+                setRecordFunction.TableId = tableId;
+                setRecordFunction.KeyTuple = keyTuple;
+                setRecordFunction.StaticData = staticData;
+                setRecordFunction.EncodedLengths = encodedLengths;
+                setRecordFunction.DynamicData = dynamicData;
             
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setRecordFunction, cancellationToken);
         }
@@ -1201,6 +1155,40 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync(setSimpleFunction, cancellationToken);
         }
 
+        public Task<string> SetStaticFieldRequestAsync(SetStaticFieldFunction setStaticFieldFunction)
+        {
+             return ContractHandler.SendRequestAsync(setStaticFieldFunction);
+        }
+
+        public Task<TransactionReceipt> SetStaticFieldRequestAndWaitForReceiptAsync(SetStaticFieldFunction setStaticFieldFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(setStaticFieldFunction, cancellationToken);
+        }
+
+        public Task<string> SetStaticFieldRequestAsync(byte[] tableId, List<byte[]> keyTuple, byte fieldIndex, byte[] data, byte[] fieldLayout)
+        {
+            var setStaticFieldFunction = new SetStaticFieldFunction();
+                setStaticFieldFunction.TableId = tableId;
+                setStaticFieldFunction.KeyTuple = keyTuple;
+                setStaticFieldFunction.FieldIndex = fieldIndex;
+                setStaticFieldFunction.Data = data;
+                setStaticFieldFunction.FieldLayout = fieldLayout;
+            
+             return ContractHandler.SendRequestAsync(setStaticFieldFunction);
+        }
+
+        public Task<TransactionReceipt> SetStaticFieldRequestAndWaitForReceiptAsync(byte[] tableId, List<byte[]> keyTuple, byte fieldIndex, byte[] data, byte[] fieldLayout, CancellationTokenSource cancellationToken = null)
+        {
+            var setStaticFieldFunction = new SetStaticFieldFunction();
+                setStaticFieldFunction.TableId = tableId;
+                setStaticFieldFunction.KeyTuple = keyTuple;
+                setStaticFieldFunction.FieldIndex = fieldIndex;
+                setStaticFieldFunction.Data = data;
+                setStaticFieldFunction.FieldLayout = fieldLayout;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(setStaticFieldFunction, cancellationToken);
+        }
+
         public Task<string> SpawnBallRequestAsync(SpawnBallFunction spawnBallFunction)
         {
              return ContractHandler.SendRequestAsync(spawnBallFunction);
@@ -1219,6 +1207,74 @@ namespace IWorld.Service
         public Task<TransactionReceipt> SpawnBallRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
         {
              return ContractHandler.SendRequestAndWaitForReceiptAsync<SpawnBallFunction>(null, cancellationToken);
+        }
+
+        public Task<string> SpliceDynamicDataRequestAsync(SpliceDynamicDataFunction spliceDynamicDataFunction)
+        {
+             return ContractHandler.SendRequestAsync(spliceDynamicDataFunction);
+        }
+
+        public Task<TransactionReceipt> SpliceDynamicDataRequestAndWaitForReceiptAsync(SpliceDynamicDataFunction spliceDynamicDataFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(spliceDynamicDataFunction, cancellationToken);
+        }
+
+        public Task<string> SpliceDynamicDataRequestAsync(byte[] tableId, List<byte[]> keyTuple, byte dynamicFieldIndex, ulong startWithinField, ulong deleteCount, byte[] data)
+        {
+            var spliceDynamicDataFunction = new SpliceDynamicDataFunction();
+                spliceDynamicDataFunction.TableId = tableId;
+                spliceDynamicDataFunction.KeyTuple = keyTuple;
+                spliceDynamicDataFunction.DynamicFieldIndex = dynamicFieldIndex;
+                spliceDynamicDataFunction.StartWithinField = startWithinField;
+                spliceDynamicDataFunction.DeleteCount = deleteCount;
+                spliceDynamicDataFunction.Data = data;
+            
+             return ContractHandler.SendRequestAsync(spliceDynamicDataFunction);
+        }
+
+        public Task<TransactionReceipt> SpliceDynamicDataRequestAndWaitForReceiptAsync(byte[] tableId, List<byte[]> keyTuple, byte dynamicFieldIndex, ulong startWithinField, ulong deleteCount, byte[] data, CancellationTokenSource cancellationToken = null)
+        {
+            var spliceDynamicDataFunction = new SpliceDynamicDataFunction();
+                spliceDynamicDataFunction.TableId = tableId;
+                spliceDynamicDataFunction.KeyTuple = keyTuple;
+                spliceDynamicDataFunction.DynamicFieldIndex = dynamicFieldIndex;
+                spliceDynamicDataFunction.StartWithinField = startWithinField;
+                spliceDynamicDataFunction.DeleteCount = deleteCount;
+                spliceDynamicDataFunction.Data = data;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(spliceDynamicDataFunction, cancellationToken);
+        }
+
+        public Task<string> SpliceStaticDataRequestAsync(SpliceStaticDataFunction spliceStaticDataFunction)
+        {
+             return ContractHandler.SendRequestAsync(spliceStaticDataFunction);
+        }
+
+        public Task<TransactionReceipt> SpliceStaticDataRequestAndWaitForReceiptAsync(SpliceStaticDataFunction spliceStaticDataFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(spliceStaticDataFunction, cancellationToken);
+        }
+
+        public Task<string> SpliceStaticDataRequestAsync(byte[] tableId, List<byte[]> keyTuple, ulong start, byte[] data)
+        {
+            var spliceStaticDataFunction = new SpliceStaticDataFunction();
+                spliceStaticDataFunction.TableId = tableId;
+                spliceStaticDataFunction.KeyTuple = keyTuple;
+                spliceStaticDataFunction.Start = start;
+                spliceStaticDataFunction.Data = data;
+            
+             return ContractHandler.SendRequestAsync(spliceStaticDataFunction);
+        }
+
+        public Task<TransactionReceipt> SpliceStaticDataRequestAndWaitForReceiptAsync(byte[] tableId, List<byte[]> keyTuple, ulong start, byte[] data, CancellationTokenSource cancellationToken = null)
+        {
+            var spliceStaticDataFunction = new SpliceStaticDataFunction();
+                spliceStaticDataFunction.TableId = tableId;
+                spliceStaticDataFunction.KeyTuple = keyTuple;
+                spliceStaticDataFunction.Start = start;
+                spliceStaticDataFunction.Data = data;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(spliceStaticDataFunction, cancellationToken);
         }
 
         public Task<string> StartTestRequestAsync(StartTestFunction startTestFunction)
@@ -1241,6 +1297,161 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync<StartTestFunction>(null, cancellationToken);
         }
 
+        public Task<byte[]> StoreVersionQueryAsync(StoreVersionFunction storeVersionFunction, BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<StoreVersionFunction, byte[]>(storeVersionFunction, blockParameter);
+        }
+
+        
+        public Task<byte[]> StoreVersionQueryAsync(BlockParameter blockParameter = null)
+        {
+            return ContractHandler.QueryAsync<StoreVersionFunction, byte[]>(null, blockParameter);
+        }
+
+        public Task<string> TransferBalanceToAddressRequestAsync(TransferBalanceToAddressFunction transferBalanceToAddressFunction)
+        {
+             return ContractHandler.SendRequestAsync(transferBalanceToAddressFunction);
+        }
+
+        public Task<TransactionReceipt> TransferBalanceToAddressRequestAndWaitForReceiptAsync(TransferBalanceToAddressFunction transferBalanceToAddressFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(transferBalanceToAddressFunction, cancellationToken);
+        }
+
+        public Task<string> TransferBalanceToAddressRequestAsync(byte[] fromNamespaceId, string toAddress, BigInteger amount)
+        {
+            var transferBalanceToAddressFunction = new TransferBalanceToAddressFunction();
+                transferBalanceToAddressFunction.FromNamespaceId = fromNamespaceId;
+                transferBalanceToAddressFunction.ToAddress = toAddress;
+                transferBalanceToAddressFunction.Amount = amount;
+            
+             return ContractHandler.SendRequestAsync(transferBalanceToAddressFunction);
+        }
+
+        public Task<TransactionReceipt> TransferBalanceToAddressRequestAndWaitForReceiptAsync(byte[] fromNamespaceId, string toAddress, BigInteger amount, CancellationTokenSource cancellationToken = null)
+        {
+            var transferBalanceToAddressFunction = new TransferBalanceToAddressFunction();
+                transferBalanceToAddressFunction.FromNamespaceId = fromNamespaceId;
+                transferBalanceToAddressFunction.ToAddress = toAddress;
+                transferBalanceToAddressFunction.Amount = amount;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(transferBalanceToAddressFunction, cancellationToken);
+        }
+
+        public Task<string> TransferBalanceToNamespaceRequestAsync(TransferBalanceToNamespaceFunction transferBalanceToNamespaceFunction)
+        {
+             return ContractHandler.SendRequestAsync(transferBalanceToNamespaceFunction);
+        }
+
+        public Task<TransactionReceipt> TransferBalanceToNamespaceRequestAndWaitForReceiptAsync(TransferBalanceToNamespaceFunction transferBalanceToNamespaceFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(transferBalanceToNamespaceFunction, cancellationToken);
+        }
+
+        public Task<string> TransferBalanceToNamespaceRequestAsync(byte[] fromNamespaceId, byte[] toNamespaceId, BigInteger amount)
+        {
+            var transferBalanceToNamespaceFunction = new TransferBalanceToNamespaceFunction();
+                transferBalanceToNamespaceFunction.FromNamespaceId = fromNamespaceId;
+                transferBalanceToNamespaceFunction.ToNamespaceId = toNamespaceId;
+                transferBalanceToNamespaceFunction.Amount = amount;
+            
+             return ContractHandler.SendRequestAsync(transferBalanceToNamespaceFunction);
+        }
+
+        public Task<TransactionReceipt> TransferBalanceToNamespaceRequestAndWaitForReceiptAsync(byte[] fromNamespaceId, byte[] toNamespaceId, BigInteger amount, CancellationTokenSource cancellationToken = null)
+        {
+            var transferBalanceToNamespaceFunction = new TransferBalanceToNamespaceFunction();
+                transferBalanceToNamespaceFunction.FromNamespaceId = fromNamespaceId;
+                transferBalanceToNamespaceFunction.ToNamespaceId = toNamespaceId;
+                transferBalanceToNamespaceFunction.Amount = amount;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(transferBalanceToNamespaceFunction, cancellationToken);
+        }
+
+        public Task<string> TransferOwnershipRequestAsync(TransferOwnershipFunction transferOwnershipFunction)
+        {
+             return ContractHandler.SendRequestAsync(transferOwnershipFunction);
+        }
+
+        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(TransferOwnershipFunction transferOwnershipFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(transferOwnershipFunction, cancellationToken);
+        }
+
+        public Task<string> TransferOwnershipRequestAsync(byte[] namespaceId, string newOwner)
+        {
+            var transferOwnershipFunction = new TransferOwnershipFunction();
+                transferOwnershipFunction.NamespaceId = namespaceId;
+                transferOwnershipFunction.NewOwner = newOwner;
+            
+             return ContractHandler.SendRequestAsync(transferOwnershipFunction);
+        }
+
+        public Task<TransactionReceipt> TransferOwnershipRequestAndWaitForReceiptAsync(byte[] namespaceId, string newOwner, CancellationTokenSource cancellationToken = null)
+        {
+            var transferOwnershipFunction = new TransferOwnershipFunction();
+                transferOwnershipFunction.NamespaceId = namespaceId;
+                transferOwnershipFunction.NewOwner = newOwner;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(transferOwnershipFunction, cancellationToken);
+        }
+
+        public Task<string> UnregisterStoreHookRequestAsync(UnregisterStoreHookFunction unregisterStoreHookFunction)
+        {
+             return ContractHandler.SendRequestAsync(unregisterStoreHookFunction);
+        }
+
+        public Task<TransactionReceipt> UnregisterStoreHookRequestAndWaitForReceiptAsync(UnregisterStoreHookFunction unregisterStoreHookFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(unregisterStoreHookFunction, cancellationToken);
+        }
+
+        public Task<string> UnregisterStoreHookRequestAsync(byte[] tableId, string hookAddress)
+        {
+            var unregisterStoreHookFunction = new UnregisterStoreHookFunction();
+                unregisterStoreHookFunction.TableId = tableId;
+                unregisterStoreHookFunction.HookAddress = hookAddress;
+            
+             return ContractHandler.SendRequestAsync(unregisterStoreHookFunction);
+        }
+
+        public Task<TransactionReceipt> UnregisterStoreHookRequestAndWaitForReceiptAsync(byte[] tableId, string hookAddress, CancellationTokenSource cancellationToken = null)
+        {
+            var unregisterStoreHookFunction = new UnregisterStoreHookFunction();
+                unregisterStoreHookFunction.TableId = tableId;
+                unregisterStoreHookFunction.HookAddress = hookAddress;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(unregisterStoreHookFunction, cancellationToken);
+        }
+
+        public Task<string> UnregisterSystemHookRequestAsync(UnregisterSystemHookFunction unregisterSystemHookFunction)
+        {
+             return ContractHandler.SendRequestAsync(unregisterSystemHookFunction);
+        }
+
+        public Task<TransactionReceipt> UnregisterSystemHookRequestAndWaitForReceiptAsync(UnregisterSystemHookFunction unregisterSystemHookFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(unregisterSystemHookFunction, cancellationToken);
+        }
+
+        public Task<string> UnregisterSystemHookRequestAsync(byte[] systemId, string hookAddress)
+        {
+            var unregisterSystemHookFunction = new UnregisterSystemHookFunction();
+                unregisterSystemHookFunction.SystemId = systemId;
+                unregisterSystemHookFunction.HookAddress = hookAddress;
+            
+             return ContractHandler.SendRequestAsync(unregisterSystemHookFunction);
+        }
+
+        public Task<TransactionReceipt> UnregisterSystemHookRequestAndWaitForReceiptAsync(byte[] systemId, string hookAddress, CancellationTokenSource cancellationToken = null)
+        {
+            var unregisterSystemHookFunction = new UnregisterSystemHookFunction();
+                unregisterSystemHookFunction.SystemId = systemId;
+                unregisterSystemHookFunction.HookAddress = hookAddress;
+            
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(unregisterSystemHookFunction, cancellationToken);
+        }
+
         public Task<string> UpdateAllBallsRequestAsync(UpdateAllBallsFunction updateAllBallsFunction)
         {
              return ContractHandler.SendRequestAsync(updateAllBallsFunction);
@@ -1261,74 +1472,15 @@ namespace IWorld.Service
              return ContractHandler.SendRequestAndWaitForReceiptAsync<UpdateAllBallsFunction>(null, cancellationToken);
         }
 
-        public Task<string> UpdateInFieldRequestAsync(UpdateInFieldFunction updateInFieldFunction)
+        public Task<byte[]> WorldVersionQueryAsync(WorldVersionFunction worldVersionFunction, BlockParameter blockParameter = null)
         {
-             return ContractHandler.SendRequestAsync(updateInFieldFunction);
+            return ContractHandler.QueryAsync<WorldVersionFunction, byte[]>(worldVersionFunction, blockParameter);
         }
 
-        public Task<TransactionReceipt> UpdateInFieldRequestAndWaitForReceiptAsync(UpdateInFieldFunction updateInFieldFunction, CancellationTokenSource cancellationToken = null)
+        
+        public Task<byte[]> WorldVersionQueryAsync(BlockParameter blockParameter = null)
         {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(updateInFieldFunction, cancellationToken);
-        }
-
-        public Task<string> UpdateInFieldRequestAsync(byte[] table, List<byte[]> key, byte schemaIndex, BigInteger startByteIndex, byte[] dataToSet)
-        {
-            var updateInFieldFunction = new UpdateInFieldFunction();
-                updateInFieldFunction.Table = table;
-                updateInFieldFunction.Key = key;
-                updateInFieldFunction.SchemaIndex = schemaIndex;
-                updateInFieldFunction.StartByteIndex = startByteIndex;
-                updateInFieldFunction.DataToSet = dataToSet;
-            
-             return ContractHandler.SendRequestAsync(updateInFieldFunction);
-        }
-
-        public Task<TransactionReceipt> UpdateInFieldRequestAndWaitForReceiptAsync(byte[] table, List<byte[]> key, byte schemaIndex, BigInteger startByteIndex, byte[] dataToSet, CancellationTokenSource cancellationToken = null)
-        {
-            var updateInFieldFunction = new UpdateInFieldFunction();
-                updateInFieldFunction.Table = table;
-                updateInFieldFunction.Key = key;
-                updateInFieldFunction.SchemaIndex = schemaIndex;
-                updateInFieldFunction.StartByteIndex = startByteIndex;
-                updateInFieldFunction.DataToSet = dataToSet;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(updateInFieldFunction, cancellationToken);
-        }
-
-        public Task<string> UpdateInFieldRequestAsync(UpdateInField1Function updateInField1Function)
-        {
-             return ContractHandler.SendRequestAsync(updateInField1Function);
-        }
-
-        public Task<TransactionReceipt> UpdateInFieldRequestAndWaitForReceiptAsync(UpdateInField1Function updateInField1Function, CancellationTokenSource cancellationToken = null)
-        {
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(updateInField1Function, cancellationToken);
-        }
-
-        public Task<string> UpdateInFieldRequestAsync(byte[] @namespace, byte[] name, List<byte[]> key, byte schemaIndex, BigInteger startByteIndex, byte[] dataToSet)
-        {
-            var updateInField1Function = new UpdateInField1Function();
-                updateInField1Function.Namespace = @namespace;
-                updateInField1Function.Name = name;
-                updateInField1Function.Key = key;
-                updateInField1Function.SchemaIndex = schemaIndex;
-                updateInField1Function.StartByteIndex = startByteIndex;
-                updateInField1Function.DataToSet = dataToSet;
-            
-             return ContractHandler.SendRequestAsync(updateInField1Function);
-        }
-
-        public Task<TransactionReceipt> UpdateInFieldRequestAndWaitForReceiptAsync(byte[] @namespace, byte[] name, List<byte[]> key, byte schemaIndex, BigInteger startByteIndex, byte[] dataToSet, CancellationTokenSource cancellationToken = null)
-        {
-            var updateInField1Function = new UpdateInField1Function();
-                updateInField1Function.Namespace = @namespace;
-                updateInField1Function.Name = name;
-                updateInField1Function.Key = key;
-                updateInField1Function.SchemaIndex = schemaIndex;
-                updateInField1Function.StartByteIndex = startByteIndex;
-                updateInField1Function.DataToSet = dataToSet;
-            
-             return ContractHandler.SendRequestAndWaitForReceiptAsync(updateInField1Function, cancellationToken);
+            return ContractHandler.QueryAsync<WorldVersionFunction, byte[]>(null, blockParameter);
         }
     }
 }
