@@ -2,9 +2,7 @@
 
 #nullable enable
 using System;
-using mud.Client;
-using mud.Network.schemas;
-using mud.Unity;
+using mud;
 using UniRx;
 using Property = System.Collections.Generic.Dictionary<string, object>;
 using System.Collections.Generic;
@@ -16,8 +14,10 @@ namespace <%= namespace %>
 
 	public class <%= tableClassName %> : IMudTable
 	{
-		public readonly static TableId ID = new ("<%= tableNamespace %>", "<%= tableName %>");
-		public override TableId GetTableId() {return ID;}
+
+		public readonly static string ID = "<%= tableName %>";
+		public static RxTable <%= tableName %>RxTable {get{return NetworkManager.Datastore.tableNameIndex[ID]; } }
+		public override string GetTableId() {return ID;}
 
 		<% for (const field of fields) { -%>
 			public <%= field.type %>? <%= field.key %>;
@@ -48,7 +48,7 @@ namespace <%= namespace %>
 			<% } -%>
 		}
 
-		public override void RecordToTable(Record record) {
+		public override void RecordToTable(RxRecord record) {
 
 			var table = record.value;
 			//bool hasValues = false;
@@ -59,23 +59,6 @@ namespace <%= namespace %>
 			<% } -%>
 
 		}
-
-		public override IMudTable RecordUpdateToTable(RecordUpdate tableUpdate) {
-			<%= tableClassName%>Update update = (<%= tableClassName%>Update)tableUpdate;
-			return update?.TypedValue.Item1;
-		}	
-
-
-		public override RecordUpdate CreateTypedRecord(RecordUpdate newUpdate)
-        {
-            return new <%= tableClassName%>Update
-                {
-                    TableId = newUpdate.TableId,
-                    Key = newUpdate.Key,
-                    Value = newUpdate.Value,
-                    TypedValue = MapUpdates(newUpdate.Value)
-                };
-        }
 
 		public static Tuple<<%= tableClassName %>?, <%= tableClassName %>?> MapUpdates(Tuple<Property?, Property?> value) {
 			<%= tableClassName %>? current = null;

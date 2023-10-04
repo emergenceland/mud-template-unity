@@ -3,10 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using IWorld.ContractDefinition;
-using mud.Unity;
+using mud;
 using UniRx;
 using DefaultNamespace;
-using mud.Client;
 using UnityEngine;
 using ObservableExtensions = UniRx.ObservableExtensions;
 using IWorld.ContractDefinition;
@@ -57,7 +56,7 @@ public class TestManager : MonoBehaviour
     private async void StartTest(NetworkManager _)
     {
 
-        var posQuery = new Query().In(PositionTable.ID);
+        var posQuery = new Query().In(PositionTable.PositionRxTable);
         ballSub = ObservableExtensions.Subscribe(net.ds.RxQuery(posQuery).ObserveOnMainThread(), OnPosition);
 
         // var query = new Query().In(StateTable.ID);
@@ -76,7 +75,7 @@ public class TestManager : MonoBehaviour
 
     private async UniTask SpawnBall() {
 
-        await NetworkManager.Instance.worldSend.TxExecute<SpawnBallFunction>();
+        await NetworkManager.Instance.world.Write<SpawnBallFunction>();
 
         TestInitialized = true;
         OnInitialized?.Invoke();
@@ -84,7 +83,7 @@ public class TestManager : MonoBehaviour
         Debug.Log("Initialized");
     }
 
-    private void OnPosition((List<Record> SetRecords, List<Record> RemovedRecords) update) {
+    private void OnPosition((List<RxRecord> SetRecords, List<RxRecord> RemovedRecords) update) {
         // Debug.Log("--TABLE UPDATE-- (" + update.SetRecords.Count.ToString() + ") (" + update.RemovedRecords.Count.ToString() + ")");
         UpdatePosition(update.SetRecords, false);
         UpdatePosition(update.RemovedRecords, true);
@@ -92,7 +91,7 @@ public class TestManager : MonoBehaviour
 
 
 
-    void UpdatePosition(List<Record> records, bool isDelete = false) {
+    void UpdatePosition(List<RxRecord> records, bool isDelete = false) {
 
          // first element of tuple is set records, second is deleted records
         foreach (var record in records) {
@@ -109,7 +108,7 @@ public class TestManager : MonoBehaviour
 
     }
 
-    private void OnState((List<Record> SetRecords, List<Record> RemovedRecords) update)
+    private void OnState((List<RxRecord> SetRecords, List<RxRecord> RemovedRecords) update)
     {
         Debug.Log("--TABLE UPDATE--");
         UpdateBall(update.SetRecords, false);
@@ -118,7 +117,7 @@ public class TestManager : MonoBehaviour
 
 
 
-    void UpdateBall(List<Record> records, bool isDelete = false) {
+    void UpdateBall(List<RxRecord> records, bool isDelete = false) {
 
          // first element of tuple is set records, second is deleted records
         foreach (var record in records) {
@@ -164,7 +163,7 @@ public class TestManager : MonoBehaviour
         while(!success) {
 
             try {
-                success = await NetworkManager.Instance.worldSend.TxExecute<TFunction>();
+                success = await NetworkManager.Instance.world.Write<TFunction>();
             }
             catch (System.Exception ex) {
                 // Handle your exception here

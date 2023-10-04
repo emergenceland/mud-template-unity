@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
-using mud.Unity;
-using mud.Client;
+using mud;
 using IWorld.ContractDefinition;
 using System.Text;
 using Nethereum.RPC.TransactionTypes;
@@ -251,7 +250,7 @@ public class BallTest : MonoBehaviour
         byte[] byteHexArray = HexStringToBytes(key.Replace("0x", ""));
 
         try {
-            return await NetworkManager.Instance.worldSend.TxExecute<TFunction>(byteHexArray);
+            return await NetworkManager.Instance.world.Write<TFunction>(byteHexArray);
         }
         catch (System.Exception ex) {
             // Handle your exception here

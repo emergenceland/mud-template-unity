@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using IWorld.ContractDefinition;
-using mud.Unity;
+using mud;
 using UniRx;
 using DefaultNamespace;
-using mud.Client;
 using UnityEngine;
 using ObservableExtensions = UniRx.ObservableExtensions;
 
@@ -25,11 +24,11 @@ public class CounterManager : MonoBehaviour
 
     private void SubscribeToCounter(NetworkManager _)
     {
-        var incrementQuery = new Query().In(CounterTable.ID);
+        var incrementQuery = new Query().In(CounterTable.CounterRxTable);
         _counterSub = ObservableExtensions.Subscribe(net.ds.RxQuery(incrementQuery).ObserveOnMainThread(), OnIncrement);
     }
 
-    private void OnIncrement((List<Record> SetRecords, List<Record> RemovedRecords) update)
+    private void OnIncrement((List<RxRecord> SetRecords, List<RxRecord> RemovedRecords) update)
     {
         // first element of tuple is set records, second is deleted records
         foreach (var record in update.SetRecords)
@@ -60,7 +59,7 @@ public class CounterManager : MonoBehaviour
     {
         try
         {
-            await net.worldSend.TxExecute<IncrementFunction>();
+            await net.world.Write<IncrementFunction>();
         }
         catch (Exception ex)
         {
