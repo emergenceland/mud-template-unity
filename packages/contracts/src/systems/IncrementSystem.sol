@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 import { System } from "@latticexyz/world/src/System.sol";
 import { IStore } from "@latticexyz/store/src/IStore.sol";
-import { Counter } from "../codegen/Tables.sol";
+import { Counter } from "../codegen/index.sol";
 
 bytes32 constant SingletonKey = bytes32(uint256(0x060D));
 
