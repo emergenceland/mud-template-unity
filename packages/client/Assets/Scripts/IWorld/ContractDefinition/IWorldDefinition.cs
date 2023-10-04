@@ -64,6 +64,24 @@ namespace IWorld.ContractDefinition
         public virtual List<byte[]> Key { get; set; }
     }
 
+    public partial class DeleteSetFunction : DeleteSetFunctionBase { }
+
+    [Function("deleteSet")]
+    public class DeleteSetFunctionBase : FunctionMessage
+    {
+        [Parameter("bytes32", "ball", 1)]
+        public virtual byte[] Ball { get; set; }
+    }
+
+    public partial class DeleteSimpleFunction : DeleteSimpleFunctionBase { }
+
+    [Function("deleteSimple")]
+    public class DeleteSimpleFunctionBase : FunctionMessage
+    {
+        [Parameter("bytes32", "ball", 1)]
+        public virtual byte[] Ball { get; set; }
+    }
+
     public partial class EmitEphemeralRecord1Function : EmitEphemeralRecord1FunctionBase { }
 
     [Function("emitEphemeralRecord")]
@@ -230,6 +248,15 @@ namespace IWorld.ContractDefinition
     public class IsStoreFunctionBase : FunctionMessage
     {
 
+    }
+
+    public partial class MoveBallFunction : MoveBallFunctionBase { }
+
+    [Function("moveBall")]
+    public class MoveBallFunctionBase : FunctionMessage
+    {
+        [Parameter("bytes32", "key", 1)]
+        public virtual byte[] Key { get; set; }
     }
 
     public partial class PopFromField1Function : PopFromField1FunctionBase { }
@@ -441,6 +468,15 @@ namespace IWorld.ContractDefinition
         public virtual string Grantee { get; set; }
     }
 
+    public partial class SetDeleteFunction : SetDeleteFunctionBase { }
+
+    [Function("setDelete")]
+    public class SetDeleteFunctionBase : FunctionMessage
+    {
+        [Parameter("bytes32", "ball", 1)]
+        public virtual byte[] Ball { get; set; }
+    }
+
     public partial class SetFieldFunction : SetFieldFunctionBase { }
 
     [Function("setField")]
@@ -527,6 +563,39 @@ namespace IWorld.ContractDefinition
         public virtual List<byte[]> Key { get; set; }
         [Parameter("bytes", "data", 3)]
         public virtual byte[] Data { get; set; }
+    }
+
+    public partial class SetSimpleFunction : SetSimpleFunctionBase { }
+
+    [Function("setSimple")]
+    public class SetSimpleFunctionBase : FunctionMessage
+    {
+        [Parameter("bytes32", "ball", 1)]
+        public virtual byte[] Ball { get; set; }
+    }
+
+    public partial class SpawnBallFunction : SpawnBallFunctionBase { }
+
+    [Function("spawnBall")]
+    public class SpawnBallFunctionBase : FunctionMessage
+    {
+
+    }
+
+    public partial class StartTestFunction : StartTestFunctionBase { }
+
+    [Function("startTest")]
+    public class StartTestFunctionBase : FunctionMessage
+    {
+
+    }
+
+    public partial class UpdateAllBallsFunction : UpdateAllBallsFunctionBase { }
+
+    [Function("updateAllBalls")]
+    public class UpdateAllBallsFunctionBase : FunctionMessage
+    {
+
     }
 
     public partial class UpdateInFieldFunction : UpdateInFieldFunctionBase { }
@@ -770,6 +839,10 @@ namespace IWorld.ContractDefinition
 
 
 
+
+
+
+
     public partial class GetFieldOutputDTO : GetFieldOutputDTOBase { }
 
     [FunctionOutput]
@@ -832,6 +905,18 @@ namespace IWorld.ContractDefinition
         [Parameter("bytes32", "schema", 1)]
         public virtual byte[] Schema { get; set; }
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

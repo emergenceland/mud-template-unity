@@ -1,3 +1,7 @@
 node_modules
 .DS_Store
 .yarn
+
+/packages/contracts/src/codegen/
+/packages/client/Assets/Scripts/IWorld/
+/packages/client/Assets/Scripts/IWorld.meta

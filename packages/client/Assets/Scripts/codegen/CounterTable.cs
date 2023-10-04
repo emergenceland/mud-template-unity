@@ -7,6 +7,8 @@ using mud.Network.schemas;
 using mud.Unity;
 using UniRx;
 using Property = System.Collections.Generic.Dictionary<string, object>;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace DefaultNamespace
 {
@@ -14,90 +16,69 @@ namespace DefaultNamespace
 
     public class CounterTable : IMudTable
     {
-        public static readonly TableId TableId = new("", "Counter");
+        public readonly static TableId ID = new("", "Counter");
+
+        public override TableId GetTableId()
+        {
+            return ID;
+        }
 
         public ulong? value;
 
-        public static CounterTable? GetTableValue(string key)
+        public override Type TableType()
         {
-            var query = new Query().In(TableId);
-            var result = NetworkManager.Instance.ds.RunQuery(query);
-            var counterTable = new CounterTable();
-            var hasValues = false;
+            return typeof(CounterTable);
+        }
 
-            foreach (var record in result)
+        public override Type TableUpdateType()
+        {
+            return typeof(CounterTableUpdate);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            CounterTable other = (CounterTable)obj;
+
+            if (other == null)
             {
-                var v = record.value["value"];
-
-                switch (record.key)
-                {
-                    case "value":
-                        var valueValue = (ulong)v;
-                        counterTable.value = valueValue;
-                        hasValues = true;
-                        break;
-                }
+                return false;
             }
-
-            return hasValues ? counterTable : null;
+            if (value != other.value)
+            {
+                return false;
+            }
+            return true;
         }
 
-        public static IObservable<CounterTableUpdate> OnRecordUpdate()
+        public override void SetValues(params object[] functionParameters)
         {
-            return NetworkManager.Instance.ds.OnDataStoreUpdate
-                .Where(
-                    update =>
-                        update.TableId == TableId.ToString() && update.Type == UpdateType.SetField
-                )
-                .Select(
-                    update =>
-                        new CounterTableUpdate
-                        {
-                            TableId = update.TableId,
-                            Key = update.Key,
-                            Value = update.Value,
-                            TypedValue = MapUpdates(update.Value)
-                        }
-                );
+            value = (ulong)(int)functionParameters[0];
         }
 
-        public static IObservable<CounterTableUpdate> OnRecordInsert()
+        public override void RecordToTable(Record record)
         {
-            return NetworkManager.Instance.ds.OnDataStoreUpdate
-                .Where(
-                    update =>
-                        update.TableId == TableId.ToString() && update.Type == UpdateType.SetRecord
-                )
-                .Select(
-                    update =>
-                        new CounterTableUpdate
-                        {
-                            TableId = update.TableId,
-                            Key = update.Key,
-                            Value = update.Value,
-                            TypedValue = MapUpdates(update.Value)
-                        }
-                );
+            var table = record.value;
+            //bool hasValues = false;
+
+            var valueValue = (ulong)table["value"];
+            value = valueValue;
         }
 
-        public static IObservable<CounterTableUpdate> OnRecordDelete()
+        public override IMudTable RecordUpdateToTable(RecordUpdate tableUpdate)
         {
-            return NetworkManager.Instance.ds.OnDataStoreUpdate
-                .Where(
-                    update =>
-                        update.TableId == TableId.ToString()
-                        && update.Type == UpdateType.DeleteRecord
-                )
-                .Select(
-                    update =>
-                        new CounterTableUpdate
-                        {
-                            TableId = update.TableId,
-                            Key = update.Key,
-                            Value = update.Value,
-                            TypedValue = MapUpdates(update.Value)
-                        }
-                );
+            CounterTableUpdate update = (CounterTableUpdate)tableUpdate;
+            return update?.TypedValue.Item1;
+        }
+
+        public override RecordUpdate CreateTypedRecord(RecordUpdate newUpdate)
+        {
+            return new CounterTableUpdate
+            {
+                TableId = newUpdate.TableId,
+                Key = newUpdate.Key,
+                Value = newUpdate.Value,
+                TypedValue = MapUpdates(newUpdate.Value)
+            };
         }
 
         public static Tuple<CounterTable?, CounterTable?> MapUpdates(

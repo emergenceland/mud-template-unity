@@ -1,5 +1,5 @@
 import mudConfig from "../mud.config";
-import { AbiTypeToSchemaType, SchemaType } from "@latticexyz/schema-type";
+import { schemaAbiTypeToDefaultValue, SchemaAbiType, schemaAbiTypes } from "@latticexyz/schema-type";
 import { schemaTypesToCSTypeStrings } from "./types";
 import { StoreConfig } from "@latticexyz/store";
 import { WorldConfig } from "@latticexyz/world";
@@ -18,20 +18,25 @@ export async function createCSComponents(filePath: string, mudConfig: any, table
   const worldNamespace = tableData.namespace;
 
   for (const key in tableData.schema) {
+
+    // console.log(`type: ${abiOrUserType} key: ${key}`);
     const abiOrUserType = tableData.schema[key];
-    if (abiOrUserType in AbiTypeToSchemaType) {
-      const schemaType = AbiTypeToSchemaType[abiOrUserType];
+    const indexOf = schemaAbiTypes.indexOf(abiOrUserType);
+
+    if (indexOf >= 0) {
+      //get the schematype (ie. uint256) and the equivalent CS type (ie. "ulong")
+      const schemaType = schemaAbiTypes[indexOf];
       const typeString = schemaTypesToCSTypeStrings[schemaType];
       fields.push({ key, type: typeString });
     } else if (abiOrUserType in mudConfig.enums) {
-      const schemaType = SchemaType.UINT8;
+      const schemaType = schemaAbiTypes[0];
       fields.push({ key, type: schemaTypesToCSTypeStrings[schemaType] });
     } else {
-      throw new Error(`Unknown type ${abiOrUserType} for field ${key}`);
+      throw new Error(`[${tableName}]: Unknown type ${abiOrUserType} for field ${key}`);
     }
   }
 
-  console.log("Generating UniMUD table for " + tableName);
+  // console.log("Generating UniMUD table for " + tableName);
   renderFile(
     "./unity/templates/DefinitionTemplate.ejs",
     {
@@ -49,6 +54,25 @@ export async function createCSComponents(filePath: string, mudConfig: any, table
     }
   );
 }
+
+
+export async function createAssembly(filePath: string, mudConfig: any) {
+
+  renderFile(
+    "./unity/templates/AssemblyTemplate.ejs",
+    {
+      namespace: "DefaultNamespace",
+    },
+    {},
+    (err, str) => {
+      console.log("writeFileSync " + filePath);
+      writeFileSync(filePath, str);
+      if (err) throw err;
+    }
+  );
+}
+
+
 
 async function main() {
   // get args
@@ -69,6 +93,9 @@ async function main() {
     const filePath = `${outputPath}/${tableName + "Table"}.cs`;
     await createCSComponents(filePath, mudConfig, tableName, tableData);
   });
+
+  // const filePathType = `${outputPath}/DefaultNamespace.asmdef`;
+  // await createAssembly(filePathType, mudConfig);
 
   exec(`dotnet tool run dotnet-csharpier "${outputPath}"`, (err, stdout, stderr) => {
     if (err) {
