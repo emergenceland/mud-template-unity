@@ -18,8 +18,8 @@
     "solhint": "solhint --config ./.solhint.json 'src/**/*.sol' --fix",
     "test": "tsc --noEmit && mud test",
 
-    "dev:unity": "pnpm run dev && pnpm run deploy:unity",
-    "deploy:unity": "pnpm run csgen && pnpm run resources",
+    "dev:unity": "pnpm run csgen && pnpm run resources",
+    "deploy:unity": "pnpm run dev && pnpm run deploy:unity",
     
     "csgen": "dotnet tool restore && pnpm run csBindings && pnpm run csTables",
     "csBindings": "ts-node unity/csBindings.ts ../client/Assets/Scripts",
