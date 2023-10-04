@@ -59,11 +59,5 @@ export default mudConfig({
     },
 
   },
-  modules: [
-    {
-      name: "KeysWithValueModule",
-      root: true,
-      args: [resolveTableId("Counter")],
-    },
-  ],
+  
 });

@@ -35,7 +35,7 @@ public class CounterManager : MonoBehaviour
         {
             if(record.value == null) return;
 
-            var currentValue = (ulong)record.value["value"];
+            var currentValue = (int)record.value["value"];
             Debug.Log("Counter is now: " + currentValue);
 
             int change = (int)currentValue - lastVal;
