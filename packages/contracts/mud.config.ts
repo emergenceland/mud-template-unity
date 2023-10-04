@@ -17,7 +17,7 @@ export default mudConfig({
 
     //used in the counter example scene
     Counter: {
-      schema: {
+      valueSchema: {
         value: "uint32",
       },
       storeArgument: true,
@@ -30,11 +30,11 @@ export default mudConfig({
     //universal ball counter
     Balls: {
         keySchema: {},
-        schema: {count: "int32",},
+        valueSchema: {count: "int32",},
     },
 
     Position: {
-      schema: {
+      valueSchema: {
         x: "int32",
         y: "int32",
         hasWaited: "bool",
@@ -43,7 +43,7 @@ export default mudConfig({
 
     AllTypes: {
       dataStruct: false,
-      schema: {
+      valueSchema: {
         boolTest: "bool",
         int32Test: "int32",
         uint32Test: "uint32",

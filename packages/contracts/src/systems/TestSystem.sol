@@ -4,7 +4,7 @@ import { System } from "@latticexyz/world/src/System.sol";
 import { IStore } from "@latticexyz/store/src/IStore.sol";
 import { Counter } from "../codegen/Tables.sol";
 import { Tester, State, Position, PositionData, AllTypes, Balls } from "../codegen/Tables.sol";
-import { StateType } from "../codegen/Types.sol";
+import { StateType } from "../codegen/common.sol";
 import { addressToEntityKey } from "../utility/addressToEntityKey.sol";
 
 contract TestSystem is System {
