@@ -17,7 +17,9 @@ contract PostDeploy is Script {
 
     // Call increment on the world via the registered function selector
     uint32 newValue = IWorld(worldAddress).increment();
-    IWorld(worldAddress).startTest();
+
+    // Runs a test with all types
+    // IWorld(worldAddress).startTest();
 
     vm.stopBroadcast();
   }
