@@ -1,5 +1,5 @@
 [profile.default]
-solc_version = "0.8.13"
+solc_version = "0.8.21"
 ffi = false
 fuzz_runs = 256
 optimizer = true
@@ -16,7 +16,7 @@ extra_output_files = [
 fs_permissions = [{ access = "read", path = "./"}]
 
 [profile.lattice-testnet]
-eth_rpc_url = "https://follower.testnet-chain.linfra.xyz"
+eth_rpc_url = "https://follower.testnet2-chain.linfra.xyz"
 
 [profile.hackathon-testnet]
 eth_rpc_url = "https://lattice-goerli-sequencer.optimism.io"
